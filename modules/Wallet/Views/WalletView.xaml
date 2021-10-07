@@ -2,9 +2,9 @@
 <ContentPage
     xmlns="http://xamarin.com/schemas/2014/forms"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    xmlns:converters="clr-namespace:Wallet.Converters;"
-    xmlns:zxing="clr-namespace:ZXing.Net.Mobile.Forms;assembly=ZXing.Net.Mobile.Forms;"
+    xmlns:converters="clr-namespace:Wallet.Converters"
     xmlns:zxingCommon="clr-namespace:ZXing.Common;assembly=zxing.portable"
+    xmlns:zxing="clr-namespace:ZXing.Net.Mobile.Forms;assembly=ZXing.Net.Mobile.Forms"
     Title="Cryptallet"
     x:Class="Wallet.Views.WalletView">
     <ContentPage.Resources>
@@ -16,7 +16,7 @@
             <Color
                 x:Key="ColorPrimary">#3574FA</Color>
             <Color
-                x:Key="ColorTextPrimary">#FFFFFF</Color>
+                x:Key="ColorTextPrimary">#FFF</Color>
             <Color
                 x:Key="ColorTextAccent">#384951</Color>
             <Color

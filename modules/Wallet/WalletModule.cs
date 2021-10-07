@@ -42,7 +42,10 @@ namespace Wallet
             containerRegistry.RegisterForNavigation<PasscodeConfirmationView, PasscodeConfirmationViewModel>();
             containerRegistry.RegisterForNavigation<PassphraseView, PassphraseViewModel>();
             containerRegistry.RegisterForNavigation<PassphraseConfirmationView, PassphraseConfirmationViewModel>();
+            containerRegistry.RegisterForNavigation<MainView, MainViewModel>();
             containerRegistry.RegisterForNavigation<WalletView, WalletViewModel>();
+            containerRegistry.RegisterForNavigation<CreateCashpointView, CreateCashpointViewModel>();
+            containerRegistry.RegisterForNavigation<CashpointsView, CashpointsViewModel>();
             containerRegistry.RegisterForNavigation<RecoverView, RecoverViewModel>();
             containerRegistry.RegisterForNavigation<TransactionHistoryView, TransactionHistoryViewModel>();
         }
@@ -52,7 +55,10 @@ namespace Wallet
     {
         public const string ScanQRCode = "__wallet__SCAN_QRCODE";
         public const string UnlockWallet = "__wallet__UNLOCK__UNLOCK_WALLET";
+        public const string SendView = "__wallet__MAINPAGE__WALLET";
         public const string CreateWallet = "__wallet__UNLOCK__CREATE_WALLET";
+        public const string CreateCashpoint = "__wallet__UNLOCK__MAINPAGE__CREATECASHPOINT";
+        public const string ViewCashpoints = "___wallet__MAINPAGE__VIEWCASHPOINTS";
         public const string RecoverWallet = "__wallet__UNLOCK__RECOVER_WALLET";
         public const string RecoverWalletOk = "__wallet__UNLOCK__RECOVER_WALLET_OK";
         public const string ConfirmPasscode = "__wallet__PASSCODE_CONFIRMATION";

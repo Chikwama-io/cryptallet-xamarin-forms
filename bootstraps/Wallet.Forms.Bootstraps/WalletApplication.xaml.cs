@@ -105,7 +105,7 @@ namespace Wallet.Forms.Bootstraps
         static readonly string appScheme = "cryptallet";
         static readonly string navigation = nameof(NavigationPage);
 
-        public static readonly Uri Home = new Uri($"{appScheme}:///{navigation}/{nameof(WalletView)}", UriKind.Absolute);
+        public static readonly Uri Home = new Uri($"{appScheme}:///{navigation}/{nameof(MainView)}", UriKind.Absolute);
         public static readonly Uri Default = new Uri($"{appScheme}:///{navigation}/{nameof(UnlockView)}", UriKind.Absolute);
     }
 
@@ -116,6 +116,8 @@ namespace Wallet.Forms.Bootstraps
         public static readonly Uri WalletPassphrase = new Uri($"{nameof(PassphraseView)}", UriKind.Relative);
         public static readonly Uri WalletPassphraseConfirmation = new Uri($"{nameof(PassphraseConfirmationView)}", UriKind.Relative);
         public static readonly Uri Wallet = new Uri($"{nameof(WalletView)}", UriKind.Relative);
+        public static readonly Uri CreateCashpoint = new Uri($"{nameof(CreateCashpointView)}", UriKind.Relative);
+        public static readonly Uri ViewCashpoints = new Uri($"{nameof(CashpointsView)}", UriKind.Relative);
         public static readonly Uri WalletRecover = new Uri($"{nameof(RecoverView)}", UriKind.Relative);
         public static readonly Uri QRCodeScanner = new Uri($"{nameof(ScanQRCodeView)}", UriKind.Relative);
         internal static readonly Uri WalletViewHistory = new Uri($"{nameof(TransactionHistoryView)}", UriKind.Relative);

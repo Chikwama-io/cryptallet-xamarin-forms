@@ -12,22 +12,32 @@
  *   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *   See the License for the specific language governing permissions and
  *   limitations under the License.
- */ 
-using System;
-using System.Threading.Tasks;
-using Nethereum.JsonRpc.Client;
-using Nethereum.Web3;
-using Nethereum.Web3.Accounts;
-using Nethereum.StandardTokenEIP20.Events.DTO;
-using Wallet.Core;
-using Nethereum.RPC.Eth.DTOs;
-using Nethereum.Hex.HexConvertors.Extensions;
+ */
+//using System;
+//using System.Threading.Tasks;
+//using Nethereum.JsonRpc.Client;
+//using Nethereum.Web3;
+//using Nethereum.Web3.Accounts;
+//using Nethereum.StandardTokenEIP20.Events.DTO;
+//using Wallet.Core;
+//using Nethereum.RPC.Eth.DTOs;
+//using Nethereum.Hex.HexConvertors.Extensions;
 using Wallet.Models;
-using System.Linq;
-using Xamarin.Forms.Internals;
+//using System.Linq;
+//using Xamarin.Forms.Internals;
+//using Nethereum.Contracts;
+//using Nethereum.StandardTokenEIP20;
+//using Nethereum.StandardTokenEIP20.ContractDefinition;
+
+using System;
+using System.Numerics;
+using System.Threading.Tasks;
+using Nethereum.Web3;
+using Nethereum.ABI.FunctionEncoding.Attributes;
 using Nethereum.Contracts;
-using Nethereum.StandardTokenEIP20;
-using Nethereum.StandardTokenEIP20.ContractDefinition;
+using Nethereum.Web3.Accounts;
+using Nethereum.RPC.Eth.DTOs;
+using System.Linq;
 
 namespace Wallet.Services
 {
@@ -45,16 +55,46 @@ namespace Wallet.Services
         Task<string> TransferAsync(string from, string to, decimal amount);
     }
 
+    // The balance function message definition    
+    [Function("balanceOf", "uint256")]
+    public class BalanceOfFunction : FunctionMessage
+    {
+        [Parameter("address", "_owner", 1)] public string Owner { get; set; }
+    }
+
+    [Function("transfer", "bool")]
+    public class TransferFunction : FunctionMessage
+    {
+        [Parameter("address", "_to", 1)]
+        public string To { get; set; }
+
+        [Parameter("uint256", "_value", 2)]
+        public BigInteger TokenAmount { get; set; }
+    }
+
+    [Event("Transfer")]
+    public class TransferEventDTO : IEventDTO
+    {
+        [Parameter("address", "_from", 1, true)]
+        public string From { get; set; }
+
+        [Parameter("address", "_to", 2, true)]
+        public string To { get; set; }
+
+        [Parameter("uint256", "_value", 3, false)]
+        public BigInteger Value { get; set; }
+    }
+
     public class AccountsManager : IAccountsManager
     {
-        const string CONTRACT_ADDRESS = "0xc66f5f66c672b645c3afb3387f4a81bb28f03984";
+        const string CONTRACT_ADDRESS = "0x0A3Bf14a751Ac992eb5Efacf3ACeAEdfa95FA787";
 
         public string DefaultAccountAddress => DefaultAccount?.Address;
 
         Account DefaultAccount => walletManager.Wallet?.GetAccount(0);
 
         readonly IWalletManager walletManager;
-        StandardTokenService standardTokenService;
+        //StandardTokenService standardTokenService;
         Web3 web3;
 
         public AccountsManager(IWalletManager walletManager)
@@ -71,42 +111,82 @@ namespace Wallet.Services
 
         public async Task<decimal> GetTokensAsync(string accountAddress)
         {
-            var wei = await standardTokenService.BalanceOfQueryAsync(accountAddress);
+            //var wei = await standardTokenService.BalanceOfQueryAsync(accountAddress);
 
-            return (decimal)wei;
+            //return (decimal)wei;
+            var balanceOfMessage = new BalanceOfFunction() { Owner = DefaultAccountAddress };
+            var queryHandler = web3.Eth.GetContractQueryHandler<BalanceOfFunction>();
+
+     
+            var tknbalance = await queryHandler
+            .QueryAsync<BigInteger>(CONTRACT_ADDRESS, balanceOfMessage)
+            .ConfigureAwait(false);
+            return Web3.Convert.FromWei(tknbalance);
+
         }
 
         public async Task<decimal> GetBalanceInETHAsync(string accountAddress)
         {
-            var balanceInWei = await web3.Eth.GetBalance.SendRequestAsync(accountAddress);
+            //var balanceInWei = await web3.Eth.GetBalance.SendRequestAsync(accountAddress);
 
-            return Web3.Convert.FromWei(balanceInWei);
+            //return Web3.Convert.FromWei(balanceInWei);
+
+            var balance = await web3.Eth.GetBalance.SendRequestAsync(DefaultAccountAddress);
+           
+
+            var etherAmount = Web3.Convert.FromWei(balance.Value);
+            return etherAmount;
         }
 
         public async Task<string> TransferAsync(string from, string to, decimal amount)
         {
-            var receipt = await standardTokenService.TransferFromRequestAndWaitForReceiptAsync(from, to, new System.Numerics.BigInteger((int)amount));
+            //var receipt = await standardTokenService.TransferFromRequestAndWaitForReceiptAsync(from, to, new System.Numerics.BigInteger((int)amount));
+            var receiverAddress = to;
+            var transferHandler = web3.Eth.GetContractTransactionHandler<TransferFunction>();
 
-            return receipt.TransactionHash;
+            var transfer = new TransferFunction()
+            {
+                To = receiverAddress,
+                TokenAmount = Web3.Convert.ToWei(amount)
+            };
+
+            var transactionTransferReceipt =
+            await transferHandler.SendRequestAndWaitForReceiptAsync(CONTRACT_ADDRESS, transfer);
+
+            return transactionTransferReceipt.TransactionHash;
+            //return receipt.TransactionHash;
         }
 
         public Task<TransactionModel[]> GetTransactionsAsync(bool sent = false)
         {
+
+
+
             return Task.Run(async delegate
             {
-                var transferEvent = standardTokenService.GetTransferEvent();
+                    //        var transferEvent = standardTokenService.GetTransferEvent();
 
-                var paddedAccountAddress = DefaultAccountAddress.RemoveHexPrefix()
-                                                 .PadLeft(64, '0')
-                                                 .EnsureHexPrefix();
 
-                var filter = transferEvent.CreateFilterInput(
-                    new object[] { sent ? paddedAccountAddress : null },
-                    new object[] { sent ? null : paddedAccountAddress },
-                    BlockParameter.CreateEarliest(),
-                    BlockParameter.CreateLatest());
 
-                var changes = await transferEvent.GetAllChanges(filter);
+                    var transferEventHandler = web3.Eth.GetEvent<TransferEventDTO>(CONTRACT_ADDRESS);
+
+            //var paddedAccountAddress = DefaultAccountAddress.RemoveHexPrefix()
+            //                                 .PadLeft(64, '0')
+            //                                 .EnsureHexPrefix();
+
+            var filter = transferEventHandler.CreateFilterInput(
+                        new object[] { sent ? DefaultAccountAddress : null },
+                        new object[] { sent ? null : DefaultAccountAddress },
+                        BlockParameter.CreateEarliest(),
+                        BlockParameter.CreateLatest());
+
+            //        var filter = transferEvent.CreateFilterInput(
+            //            new object[] { sent ? paddedAccountAddress : null },
+            //            new object[] { sent ? null : paddedAccountAddress },
+            //            BlockParameter.CreateEarliest(),
+            //            BlockParameter.CreateLatest());
+
+            var changes = await transferEventHandler.GetAllChanges(filter);
 
                 var timestampTasks = changes.Select(x => Task.Factory.StartNew(async (state) =>
                 {
@@ -124,7 +204,8 @@ namespace Wallet.Services
                     };
                 }, x));
 
-                return await Task.WhenAll(timestampTasks).ContinueWith(tt => {
+                return await Task.WhenAll(timestampTasks).ContinueWith(tt =>
+                {
                     return tt.Result.Select(x => x.Result).ToArray();
                 });
             });
@@ -134,10 +215,11 @@ namespace Wallet.Services
         {
             //var client = new RpcClient(new Uri("http://192.168.12.154:8545"));//iOS
             //var client = new RpcClient(new Uri("http://10.0.2.2:8545"));//ANDROID
-            var client = new RpcClient(new Uri("https://rinkeby.infura.io/O3CUsRfVYECJi12W8fk3"));
+            //var client = new RpcClient(new Uri("https://rinkeby.infura.io/O3CUsRfVYECJi12W8fk3"));
 
-            web3 = new Web3(DefaultAccount, client);
-            standardTokenService = new StandardTokenService(web3, CONTRACT_ADDRESS);
+            //web3 = new Web3(DefaultAccount, client);
+            //standardTokenService = new StandardTokenService(web3, CONTRACT_ADDRESS);
+            web3 = new Web3(DefaultAccount,"http://127.0.0.1:4444/");
         }
     }
 

@@ -17,6 +17,7 @@ namespace Wallet.iOS
             SetupTheme();
 
             global::Xamarin.Forms.Forms.Init();
+            Xamarin.FormsMaps.Init();
 
             // Code for starting up the Xamarin Test Cloud Agent
 #if DEBUG

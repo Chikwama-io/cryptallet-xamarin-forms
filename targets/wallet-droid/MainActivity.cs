@@ -22,6 +22,7 @@ namespace Wallet.Droid
             PreserveCustomRenderers();
 
             Xamarin.Forms.Forms.Init(this, savedInstanceState);
+            Xamarin.FormsMaps.Init(this, savedInstanceState);
             LoadApplication(new WalletApplication());
         }
 

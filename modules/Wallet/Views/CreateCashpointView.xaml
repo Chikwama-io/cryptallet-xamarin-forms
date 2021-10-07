@@ -1,0 +1,115 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<ContentPage
+    xmlns="http://xamarin.com/schemas/2014/forms"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    x:Class="Wallet.Views.CreateCashpointView"> 
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <Color
+                x:Key="ColorPrimary">#7C067C</Color>
+            <Color
+                x:Key="ColorTransText">#F5ad00</Color>
+            <Color
+                x:Key="ColorTextPrimary">#FFFFFF</Color>
+            <Color
+                x:Key="ColorTextAccent">#384951</Color>
+            <Color
+                x:Key="ColorTextSecondary">#B2B2B2</Color>
+            <x:Double
+                x:Key="FontSizeNormal">16</x:Double>
+            <x:Double
+                x:Key="FontSizeXlarge">26</x:Double>
+            <x:Double
+                x:Key="FontSizeLarge">20</x:Double>
+            <x:Double
+                x:Key="FontSizeSmall">14</x:Double>
+            <x:Double
+                x:Key="FontSizeXsmall">12</x:Double>
+            <OnPlatform
+                x:Key="EntryRowHeight"
+                x:TypeArguments="GridLength"
+                Android="50"
+                iOS="48">
+            </OnPlatform>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+    <ContentPage.Content>
+    <Grid
+        RowSpacing="0"
+        ColumnSpacing="0">
+        <Grid.RowDefinitions>
+            <RowDefinition
+                Height="2*" />
+          
+        </Grid.RowDefinitions>
+        <StackLayout>
+            
+        </StackLayout>
+        
+        <Grid
+            RowSpacing="10"
+        ColumnSpacing="0"
+                    Padding="24, 32"
+            BackgroundColor="#FAFAFA">
+            <Grid.RowDefinitions>
+                <RowDefinition
+                    Height="{StaticResource EntryRowHeight}" />
+                <RowDefinition
+                    Height="{StaticResource EntryRowHeight}" />
+                <RowDefinition
+                    Height="{StaticResource EntryRowHeight}" />
+                <RowDefinition
+                    Height="{StaticResource EntryRowHeight}" />
+                <RowDefinition
+                    Height="{StaticResource EntryRowHeight}" />
+              
+            </Grid.RowDefinitions>
+            <Label
+                Text="CashPoint Details:"
+                TextColor="{StaticResource ColorTextAccent}"
+                FontSize="{StaticResource FontSizeNormal}" />
+            <Entry
+                Grid.Row="1"
+                Text="{Binding CashpointName}"
+                Placeholder="Enter the name of your Cash Point" />
+
+            <Entry
+                Grid.Row="2"
+                Text="{Binding Phone}"
+                Keyboard="Telephone"
+                Placeholder="Enter your Phonenumber" />
+            <Entry
+                Grid.Row="3"
+                Text="{Binding Rate}"
+                Keyboard="Numeric"
+                Placeholder="Enter your Exchange Rate" />
+            <Entry
+                Grid.Row="4"
+                Text="{Binding Duration}"
+                Keyboard="Numeric"
+                Placeholder="Enter number of days" />
+            <Label
+                Grid.Row="5"
+                VerticalTextAlignment="Start"
+                Text="{Binding  StringFormat= 'Transaction Fee: US${0:#,##0.00}', Path='Cost'}"
+                TextColor="{StaticResource ColorTransText}"
+                FontSize="{StaticResource FontSizeNormal}" />
+        </Grid>
+        <ContentView
+            Grid.Row="1"
+            Padding="16"
+            VerticalOptions="End"
+            BackgroundColor="{StaticResource ColorPrimary}">
+            <Label
+                Text="BECOME A CASHPOINT"
+                TextColor="{StaticResource ColorTextPrimary}"
+                FontSize="{StaticResource FontSizeNormal}"
+                HorizontalTextAlignment="Center" />
+            <ContentView.GestureRecognizers>
+                <TapGestureRecognizer
+                    Command="{Binding BecomeCashpointCommand}" />
+            </ContentView.GestureRecognizers>
+        </ContentView>
+    </Grid> 
+    </ContentPage.Content>
+</ContentPage>

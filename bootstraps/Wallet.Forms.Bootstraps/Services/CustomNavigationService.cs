@@ -52,7 +52,7 @@ namespace Wallet.Forms.Bootstraps.Services
                     uri = Routes.WalletPassphraseConfirmation;
                     break;
                 case Wallet.NavigationKeys.ConfirmPassphraseOk:
-                    uri = Routes.Wallet;
+                    uri = Routes.Home;
                     break;
                 case Wallet.NavigationKeys.RecoverWallet:
                     uri = Routes.WalletRecover;
@@ -62,6 +62,15 @@ namespace Wallet.Forms.Bootstraps.Services
                     break;
                 case Wallet.NavigationKeys.WalletViewHistory:
                     uri = Routes.WalletViewHistory;
+                    break;
+                case Wallet.NavigationKeys.SendView:
+                    uri = Routes.Wallet;
+                    break;
+                case Wallet.NavigationKeys.CreateCashpoint:
+                    uri = Routes.CreateCashpoint;
+                    break;
+                case Wallet.NavigationKeys.ViewCashpoints:
+                    uri = Routes.ViewCashpoints;
                     break;
 
                 default:
