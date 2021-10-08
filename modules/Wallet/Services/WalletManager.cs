@@ -18,8 +18,13 @@ namespace Wallet.Services
     using System.Threading.Tasks;
     using NBitcoin;
     using Nethereum.HdWallet;
-    using Plugin.SecureStorage.Abstractions;
+    //using Plugin.SecureStorage.Abstractions;
+    using Xamarin.Essentials;
     using Nethereum.Hex.HexConvertors.Extensions;
+    using System;
+    using System.Collections.Generic;
+    using Newtonsoft.Json;
+    using System.IO;
 
     public interface IWalletManager
     {
@@ -42,13 +47,15 @@ namespace Wallet.Services
 
         Wallet wallet;
         public Wallet Wallet => wallet;
+        IDictionary<string, string> Keystore;
+        private string JSON;
 
-        readonly ISecureStorage secureStorgage;
+        //readonly ISecureStorage _secureStorage;
 
-        public WalletManager(ISecureStorage secureStorgage)
+        public WalletManager()
         {
-            this.secureStorgage = secureStorgage;
-            
+            Keystore = new Dictionary<string, string>();
+
         }
 
         public Task CreateWalletAsync()
@@ -73,44 +80,70 @@ namespace Wallet.Services
         {
             return Task.Run(delegate
             {
-                if (false == bypass)
+                
+                string path = System.Environment.GetFolderPath(System.Environment.SpecialFolder.Personal);
+                string filePath = Path.Combine(path, "info.json");
+                if (File.Exists(filePath))
                 {
-                    var storedPassword = secureStorgage.GetValue(PASSWORD_KEY);
+                    JSON = "";
+                    JSON = File.ReadAllText(filePath);
+                    this.Keystore = JsonConvert.DeserializeObject<Dictionary<string, string>>(JSON);
 
-                    if (false == string.Equals(password, storedPassword)) return false;
+                    string mySeed;
+
+                    if (Keystore.TryGetValue(password, out mySeed))
+                    {
+                        wallet = new Wallet(mySeed.HexToByteArray());
+
+                        return true;
+                    }
+                    else
+                    {
+                        return false;
+                    }
+
+                    
                 }
-
-                var storedSeed = secureStorgage.GetValue(SEED_KEY);
-
-                if (string.IsNullOrWhiteSpace(storedSeed)) return false;
-
-                wallet = new Wallet(storedSeed.HexToByteArray());
-
-                return true;
+                return false;
             });
+
         }
 
         public Task<bool> RestoreWallet(string seedWords, string password)
         {
+
+
             return Task.Run(delegate
             {
                 wallet = new Wallet(seedWords, SEED_PASSWORD);
 
-                var storedSeed = secureStorgage.GetValue(wallet.GetAccount(0).Address);
+                StoreCredentials(password);
 
-                return false == string.IsNullOrWhiteSpace(storedSeed);
+                return true;
             });
+
         }
 
 
         void StoreCredentials(string password)
         {
-            secureStorgage.SetValue(PASSWORD_KEY, password);
+            Keystore.Clear();
+            Keystore.Add(password, wallet.Seed);
 
-            var account = wallet.GetAccount(0);
+            JSON = JsonConvert.SerializeObject(Keystore, Formatting.Indented);
 
-            secureStorgage.SetValue(SEED_KEY, wallet.Seed);
-            secureStorgage.SetValue(account.Address, account.PrivateKey);
+            string path = System.Environment.GetFolderPath(System.Environment.SpecialFolder.Personal);
+            string filePath = Path.Combine(path, "info.json");
+            using (var file = File.Open(filePath, FileMode.Create, FileAccess.Write))
+            using (var strm = new StreamWriter(file))
+            {
+                strm.Write(JSON);
+            }
+
+            //var account = wallet.GetAccount(0);
+
+            //secureStorgage.SetValue(SEED_KEY, wallet.Seed);
+            //secureStorgage.SetValue(account.Address, account.PrivateKey);
         }
     }
 }

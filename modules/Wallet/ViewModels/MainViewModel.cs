@@ -88,7 +88,7 @@ namespace Wallet.ViewModels
         bool CanExecuteLogOutCommand(object obj) => true;
         async void ExecuteLogOutCommand(object obj)
         {
-            await navigationService.NavigateAsync(NavigationKeys.SendView);
+            await navigationService.NavigateAsync(NavigationKeys.Logout);
         }
     }
 }
