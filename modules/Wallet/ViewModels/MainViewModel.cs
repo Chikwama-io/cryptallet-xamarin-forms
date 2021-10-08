@@ -79,5 +79,16 @@ namespace Wallet.ViewModels
         {
             await navigationService.NavigateAsync(NavigationKeys.ViewCashpoints);
         }
+
+        ICommand _LogOutCommand;
+        public ICommand LogOutCommand
+        {
+            get { return (_LogOutCommand = _LogOutCommand ?? new Command<object>(ExecuteLogOutCommand, CanExecuteLogOutCommand)); }
+        }
+        bool CanExecuteLogOutCommand(object obj) => true;
+        async void ExecuteLogOutCommand(object obj)
+        {
+            await navigationService.NavigateAsync(NavigationKeys.SendView);
+        }
     }
 }

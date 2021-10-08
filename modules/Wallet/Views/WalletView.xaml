@@ -13,22 +13,29 @@
                 x:Key="BooleanInversedConverter" />
             <converters:NXTtoUSDConverter
                 x:Key="NXTtoUSDConverter" />
+
+             <Color x:Key="Primary">#7c067c</Color>
+
             <Color
-                x:Key="ColorPrimary">#3574FA</Color>
+                x:Key="ColorPrimary">#7C067C</Color>
             <Color
-                x:Key="ColorTextPrimary">#FFF</Color>
-            <Color
-                x:Key="ColorTextAccent">#384951</Color>
+                x:Key="ColorTextPrimary">#FFFFF</Color>
             <Color
                 x:Key="ColorTextSecondary">#B2B2B2</Color>
             <x:Double
                 x:Key="FontSizeNormal">16</x:Double>
             <x:Double
+                x:Key="FontSizeSmall">14</x:Double>
+          
+            <Color
+                x:Key="ColorTextAccent">#F5ad00</Color>
+
+      
+            <x:Double
                 x:Key="FontSizeXlarge">26</x:Double>
             <x:Double
                 x:Key="FontSizeLarge">20</x:Double>
-            <x:Double
-                x:Key="FontSizeSmall">14</x:Double>
+     
             <x:Double
                 x:Key="FontSizeXsmall">12</x:Double>
             <OnPlatform
@@ -76,12 +83,12 @@
             <Label
                 Margin="24,24,24,0"
                 Text="{Binding DefaultAccountAddress}"
-                TextColor="{StaticResource ColorTextAccent}"
+                TextColor="{StaticResource ColorTextSecondary}"
                 FontSize="{StaticResource FontSizeXsmall}"
                 HorizontalTextAlignment="End" />
             <Label
                 Margin="24,0,24,0"
-                Text="{Binding Balance, StringFormat='{0:#,##0.00} NXT'}"
+                Text="{Binding Balance, StringFormat='{0:#,##0.00} DoC'}"
                 TextColor="{StaticResource ColorPrimary}"
                 FontSize="{StaticResource FontSizeXlarge}"
                 HorizontalTextAlignment="End">
@@ -93,16 +100,11 @@
             <Label
                 Margin="24,0"
                 Text="{Binding Balance, Converter={StaticResource NXTtoUSDConverter}}"
-                TextColor="{StaticResource ColorTextAccent}"
+                TextColor="{StaticResource ColorTextSecondary}"
                 FontSize="{StaticResource FontSizeSmall}"
                 HorizontalTextAlignment="End"
                 VerticalOptions="End" />
-            <Label
-                Margin="24,16"
-                Text="{Binding BalanceInETH, StringFormat='{0:#,##0.00} ETH'}"
-                TextColor="{StaticResource ColorPrimary}"
-                FontSize="{StaticResource FontSizeLarge}"
-                HorizontalTextAlignment="End" />
+       
         </StackLayout>
         <Grid
             HorizontalOptions="Start"
@@ -126,7 +128,7 @@
         <Grid
             HorizontalOptions="End"
             VerticalOptions="End"
-            BackgroundColor="{StaticResource ColorTextAccent}"
+            BackgroundColor="{StaticResource ColorPrimary}"
             Margin="16,8"
             Padding="16,8">
             <Label
@@ -161,7 +163,7 @@
             </Grid.RowDefinitions>
             <Label
                 Text="Send some NXT"
-                TextColor="{StaticResource ColorTextAccent}"
+                TextColor="{StaticResource ColorTextSecondary}"
                 FontSize="{StaticResource FontSizeXlarge}" />
             <Entry
                 Grid.Row="1"
@@ -196,19 +198,19 @@
             IsVisible="{Binding Sendable, Converter={StaticResource BooleanInversedConverter}}"
             Grid.Row="1"
             Margin="24,40"
-            Text="If you have at least 1 NXT and 0.01 ETH, you will be able to send your NXT to others."
+            Text="You need to fund your wallet"
             HorizontalTextAlignment="Center"
-            TextColor="Maroon"
+            TextColor="{StaticResource ColorPrimary}"
             FontSize="{StaticResource FontSizeLarge}" />
         <ContentView
-            IsVisible="{Binding Sendable}"
+            
             Grid.Row="1"
             Padding="16"
             VerticalOptions="End"
             BackgroundColor="{StaticResource ColorPrimary}">
             <Label
                 Text="SEND"
-                TextColor="{StaticResource ColorTextPrimary}"
+                TextColor="White"
                 FontSize="{StaticResource FontSizeNormal}"
                 HorizontalTextAlignment="Center" />
             <ContentView.GestureRecognizers>

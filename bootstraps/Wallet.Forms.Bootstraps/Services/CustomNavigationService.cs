@@ -72,6 +72,9 @@ namespace Wallet.Forms.Bootstraps.Services
                 case Wallet.NavigationKeys.ViewCashpoints:
                     uri = Routes.ViewCashpoints;
                     break;
+                case Wallet.NavigationKeys.Logout:
+                    uri = Routes.Default;
+                    break;
 
                 default:
                     return await NavigateAsync(name, parameters).ConfigureAwait(false);

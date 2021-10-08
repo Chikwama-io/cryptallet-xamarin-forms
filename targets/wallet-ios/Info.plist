@@ -13,10 +13,10 @@
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>MinimumOSVersion</key>
-	<string>11.3</string>
+	<string>9.1</string>
 	<key>UIDeviceFamily</key>
 	<array>
-		<integer>2</integer>
+		<integer>1</integer>
 	</array>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>

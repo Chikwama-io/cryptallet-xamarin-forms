@@ -48,6 +48,7 @@ namespace Wallet.Services
         public WalletManager(ISecureStorage secureStorgage)
         {
             this.secureStorgage = secureStorgage;
+            
         }
 
         public Task CreateWalletAsync()

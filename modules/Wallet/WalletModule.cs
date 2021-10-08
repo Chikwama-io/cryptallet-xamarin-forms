@@ -66,6 +66,7 @@ namespace Wallet
         public const string ConfirmPassphrase = "__wallet__PASSPRASE_CONFIRMATION";
         public const string ConfirmPassphraseOk = "__wallet__PASSPRASE_CONFIRMATION_OK";
         public const string WalletViewHistory = "__wallet__WALLET_VIEW_HISTORY";
+        public const string Logout = "__mainpage__UNLOCK___";
     }
 }
 
