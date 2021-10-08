@@ -6,16 +6,16 @@
     x:Class="Wallet.Controls.Passcode">
     <ContentView.Resources>
         <ResourceDictionary>
+            <Color x:Key="Primary">#7c067c</Color>
+
             <Color
-                x:Key="ColorPrimary">#3574FA</Color>
+                x:Key="ColorPrimary">#7C067C</Color>
             <Color
-                x:Key="ColorTextPrimary">#FFFFFF</Color>
-            <Color
-                x:Key="ColorTextAccent">#384951</Color>
+                x:Key="ColorTextPrimary">#FFFFF</Color>
             <Color
                 x:Key="ColorTextSecondary">#B2B2B2</Color>
             <x:Double
-                x:Key="FontSizeNormal">36</x:Double>
+                x:Key="FontSizeNormal">16</x:Double>
             <x:Double
                 x:Key="FontSizeSmall">14</x:Double>
             <OnPlatform

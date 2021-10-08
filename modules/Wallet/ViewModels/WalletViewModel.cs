@@ -93,7 +93,7 @@ namespace Wallet.ViewModels
                 BalanceInETH = await accountsManager.GetBalanceInETHAsync(accountsManager.DefaultAccountAddress);
             }));
 
-            Sendable = true;
+            Sendable = (Balance >= 1);
 
             userDialogs.HideLoading();
         }

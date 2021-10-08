@@ -20,7 +20,7 @@ namespace Wallet.Converters
 {
     public class NXTtoUSDConverter : IValueConverter
     {
-        static readonly decimal TOKEN_IN_DOLLAR = 0.05m;
+        static readonly decimal TOKEN_IN_DOLLAR = 1m;
 
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {

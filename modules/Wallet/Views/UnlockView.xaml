@@ -5,6 +5,7 @@
     x:Class="Wallet.Views.UnlockView"
     BackgroundColor="White"
     NavigationPage.HasNavigationBar="{Binding ShouldShowNavigationBar}">
+
     <Grid
         RowSpacing="0"
         ColumnSpacing="0">
@@ -27,13 +28,13 @@
             VerticalOptions="Center"
             Spacing="0">
             <Label
-                Text="Cryptallet"
+                Text="CHIKWAMA"
                 FontSize="36"
-                TextColor="{StaticResource ColorPrimary}"
+                TextColor="#7c067c"
                 HorizontalTextAlignment="Center"
                 VerticalTextAlignment="End" />
             <Label
-                Text="wallet for your cryptos"
+                Text="digital asset marketplace"
                 FontSize="16"
                 TextColor="{StaticResource ColorTextSecondary}"
                 HorizontalTextAlignment="Center"
@@ -113,7 +114,7 @@
                 BackgroundColor="{StaticResource ColorPrimary}">
                 <Label
                     Text="UNLOCK"
-                    TextColor="{StaticResource ColorTextPrimary}"
+                    TextColor="White"
                     FontSize="{StaticResource FontSizeNormal}"
                     HorizontalTextAlignment="Center" />
                 <ContentView.GestureRecognizers>
@@ -125,10 +126,12 @@
     </Grid>
     <ContentPage.Resources>
         <ResourceDictionary>
+            <Color x:Key="Primary">#7c067c</Color>
+
             <Color
-                x:Key="ColorPrimary">#3574FA</Color>
+                x:Key="ColorPrimary">#7C067C</Color>
             <Color
-                x:Key="ColorTextPrimary">#FFFFFF</Color>
+                x:Key="ColorTextPrimary">#FFFFF</Color>
             <Color
                 x:Key="ColorTextSecondary">#B2B2B2</Color>
             <x:Double
