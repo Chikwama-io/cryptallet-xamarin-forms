@@ -13,6 +13,8 @@
                 x:Key="BooleanInversedConverter" />
             <converters:NXTtoUSDConverter
                 x:Key="NXTtoUSDConverter" />
+            <converters:FeeCalculator
+                x:Key="FeeCalculator" />
 
              <Color x:Key="Primary">#7c067c</Color>
 
@@ -163,8 +165,8 @@
             </Grid.RowDefinitions>
             <Label
                 Text="Send some dollars on chain"
-                TextColor="{StaticResource ColorTextSecondary}"
-                FontSize="{StaticResource FontSizeXlarge}" />
+                TextColor="Black"
+                FontSize="{StaticResource FontSizeLarge}" />
             <Entry
                 Grid.Row="1"
                 Text="{Binding RecipientAddress}"
@@ -189,10 +191,12 @@
                 Placeholder="Enter amout to send" />
             <Label
                 Grid.Row="3"
+                Margin="5,11,5,0"
                 VerticalTextAlignment="Start"
-                Text="{Binding SendingAmount, Converter={StaticResource NXTtoUSDConverter}}"
+                Text="{Binding StringFormat= 'They receive {0:#,##0.00}', Path='SendingAmount', Converter={StaticResource NXTtoUSDConverter}}"
                 TextColor="{StaticResource ColorTextAccent}"
                 FontSize="{StaticResource FontSizeNormal}" />
+                    <Label Grid.Row="3" Margin="5,35,5,0" TextColor="{StaticResource ColorTextAccent}" Text="{Binding  StringFormat= 'Transaction fee {0:#,##0.00}', Path='Fee', Converter={StaticResource FeeCalculator}}" FontSize="{StaticResource FontSizeNormal}"/>
         </Grid>
         <Label
             IsVisible="{Binding Sendable, Converter={StaticResource BooleanInversedConverter}}"

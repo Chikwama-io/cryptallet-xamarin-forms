@@ -48,6 +48,8 @@ namespace Wallet.ViewModels
             set => SetProperty(ref _Sendable, value);
         }
 
+       
+
         public string DefaultAccountAddress => accountsManager.DefaultAccountAddress;
 
         readonly IAccountsManager accountsManager;
@@ -134,11 +136,18 @@ namespace Wallet.ViewModels
             set => SetProperty(ref _RecipientAddress, value);
         }
 
-        decimal _SendingAmount;
-        public decimal SendingAmount
+        double _SendingAmount;
+        public double SendingAmount
         {
-            get => _SendingAmount;
-            set => SetProperty(ref _SendingAmount, value);
+            get { return _SendingAmount; }
+            set { _SendingAmount = value; Fee = _SendingAmount * 0.02; OnPropertyChanged(); }
+        }
+
+        double _Fee;
+        public double Fee
+        {
+            get { return _Fee; }
+            set { _Fee = value; OnPropertyChanged(); }
         }
 
         void ExtractAccountAddress(string qr)

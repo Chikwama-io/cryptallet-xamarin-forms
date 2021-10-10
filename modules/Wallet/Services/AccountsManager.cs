@@ -52,7 +52,7 @@ namespace Wallet.Services
 
         Task<TransactionModel[]> GetTransactionsAsync(bool sent = false);
 
-        Task<string> TransferAsync(string from, string to, decimal amount);
+        Task<string> TransferAsync(string from, string to, double amount);
     }
 
     // The balance function message definition    
@@ -138,7 +138,7 @@ namespace Wallet.Services
             return etherAmount;
         }
 
-        public async Task<string> TransferAsync(string from, string to, decimal amount)
+        public async Task<string> TransferAsync(string from, string to, double amount)
         {
             //var receipt = await standardTokenService.TransferFromRequestAndWaitForReceiptAsync(from, to, new System.Numerics.BigInteger((int)amount));
             var receiverAddress = to;
