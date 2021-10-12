@@ -55,7 +55,7 @@ namespace Wallet.Services
 
         Task<string> TransferAsync(string from, string to, double amount);
 
-        //Task<CashpointModel[]> GetCashPointsAsync();
+        Task<CashpointModel[]> GetCashPointsAsync();
 
         Task<string> AddCashPointAsync(string name, BigInteger latitude, BigInteger longitude, uint phone, uint rate, uint duration);
     }
@@ -75,6 +75,24 @@ namespace Wallet.Services
 
         [Parameter("uint256", "_value", 2)]
         public BigInteger TokenAmount { get; set; }
+    }
+
+    [Function("Count", "uint256")]
+    public class Count : FunctionMessage
+    {
+
+    }
+
+    [Function("keys", "address")]
+    public class Keys : FunctionMessage
+    {
+        [Parameter("uint256", "_index", 1)] public int Index { get; set; }
+    }
+
+    [Function("cashpoints", "CashPoint")]
+    public class CashPoints : FunctionMessage
+    {
+        [Parameter("string", "_address", 1)] public string Address { get; set; }
     }
 
     [Function("addCashPoint")]
@@ -100,9 +118,23 @@ namespace Wallet.Services
         public string EndTime { get; set; }
     }
 
-    
+    [FunctionOutput]
+    public class CashPointsOutputDTO : IFunctionOutputDTO
+    {
+            [Parameter("tuple", "cashPoint", 1)]
+            public virtual CashpointModel CashPoint { get; set; }
 
-    [Event("Transfer")]
+    }
+
+    [FunctionOutput]
+    public class KeysOutputDTO : IFunctionOutputDTO
+    {
+
+        [Parameter("string", "address", 1)]
+        public string Address { get; set; }
+    }
+
+        [Event("Transfer")]
     public class TransferEventDTO : IEventDTO
     {
         [Parameter("address", "_from", 1, true)]
@@ -174,8 +206,9 @@ namespace Wallet.Services
             //var receipt = await standardTokenService.TransferFromRequestAndWaitForReceiptAsync(from, to, new System.Numerics.BigInteger((int)amount));
             var receiverAddress = to;
             var transferHandler = web3.Eth.GetContractTransactionHandler<TransferFunction>();
+            var countQueryHandler = web3.Eth.GetContractQueryHandler<Count>();
 
-            var transfer = new TransferFunction()
+                var transfer = new TransferFunction()
             {
                 To = receiverAddress,
                 TokenAmount = Web3.Convert.ToWei(amount)
@@ -255,8 +288,8 @@ namespace Wallet.Services
             temp.Rate = rate;
             
 
-            DateTime now = DateTime.Now;
-            var endtime = now.AddDays(duration).ToString("F");
+            //DateTime now = DateTime.Now;
+            //var endtime = now.AddDays(duration).ToString("F");
             
             //var receiptSending = await contractHandler.SendRequestAndWaitForReceiptAsync(new AddCashPointFunction()
             //{CashPoint = temp});
@@ -281,12 +314,52 @@ namespace Wallet.Services
             //return receiptSending.TransactionHash;
         }
 
-        //public async Task<CashpointModel> GetCashPointsAsync()
-        //{
-           
-        //}
+        public string[] addresses;
+        public CashpointModel[] cashPoints;
 
-        void Initialize()
+        public async Task<CashpointModel[]> GetCashPointsAsync()
+        {
+            var contractHandler = web3.Eth.GetContractHandler(CASHPOINT_CONTRACT_ADDRESS);
+            var countQueryHandler = web3.Eth.GetContractQueryHandler<Count>();
+            var count = await countQueryHandler.QueryAsync<int>(CASHPOINT_CONTRACT_ADDRESS).ConfigureAwait(false);
+
+                //var keysQueryHandler = web3.Eth.GetContractQueryHandler<Keys>();
+               
+                for (int x = 0; x < count; x++)
+                {
+
+                    var query = await contractHandler.QueryDeserializingToObjectAsync<Keys, KeysOutputDTO>(
+                    new Keys() { Index = x });
+
+                    addresses[x] = query.Address;
+                }
+
+
+                for (int i = 0; i < addresses.Length; i++)
+                {
+                    var query = await contractHandler.QueryDeserializingToObjectAsync<CashPoints, CashPointsOutputDTO>(
+                    new CashPoints() { Address = addresses[i] });
+
+                    var thisCashPoint = query.CashPoint;
+
+                    CashpointModel cashpoint = new CashpointModel 
+                    {
+                        AccountName = thisCashPoint.AccountName,
+                        Latitude = thisCashPoint.Latitude,
+                        Longitude = thisCashPoint.Longitude,
+                        PhoneNumber = thisCashPoint.PhoneNumber,
+                        EndTime = thisCashPoint.EndTime,
+                        Rate = thisCashPoint.Rate,
+                        isCashPoint = thisCashPoint.isCashPoint
+                    };
+
+                    cashPoints[i] = cashpoint;
+                }
+
+                return cashPoints;
+            }
+
+            void Initialize()
         {
             //var client = new RpcClient(new Uri("http://192.168.12.154:8545"));//iOS
             //var client = new RpcClient(new Uri("http://10.0.2.2:8545"));//ANDROID
