@@ -34,6 +34,7 @@ using System.Numerics;
 using System.Threading.Tasks;
 using Nethereum.Web3;
 using Nethereum.ABI.FunctionEncoding.Attributes;
+using Nethereum.ABI.Model;
 using Nethereum.Contracts;
 using Nethereum.Web3.Accounts;
 using Nethereum.RPC.Eth.DTOs;
@@ -79,25 +80,27 @@ namespace Wallet.Services
     [Function("addCashPoint")]
     public class AddCashPointFunction:FunctionMessage
     {
-        [Parameter("string", "_name", 1)]
-        public string Name { get; set; }
-
-        [Parameter("int256", "_latitude", 2)]
-        public BigInteger Latitude { get; set; }
-
-        [Parameter("int256", "_longitude", 3)]
-        public BigInteger Longitude { get; set; }
-
-        [Parameter("uint256", "_phoneNumber", 4)]
-        public BigInteger Phone { get; set; }
-
-        [Parameter("uint256", "rate", 5)]
-        public BigInteger Rate { get; set; }
-
-        [Parameter("uint256", "endtime", 6)]
-        public string Endtime { get; set; }
-
+        [Parameter("tuple[]", "cashPoint", 1)]
+        public CashpointModel CashPoint { get; set; }
     }
+
+    [Function("UpdateEndTime")]
+    public class UpdateEndTimeFunction : FunctionMessage
+    {
+        [Parameter("string", "endTime", 1)]
+        public string EndTime { get; set; }
+
+    [FunctionOutput]
+    public class AddCashPointOutputDTO : IFunctionOutputDTO
+    {
+        [Parameter("bool","update", 1)]
+        public bool Update { get; set; }
+
+        [Parameter("string", "endTime", 2)]
+        public string EndTime { get; set; }
+    }
+
+    
 
     [Event("Transfer")]
     public class TransferEventDTO : IEventDTO
@@ -242,14 +245,40 @@ namespace Wallet.Services
         public async Task<string> AddCashPointAsync(string name, BigInteger latitude, BigInteger longitude, uint phone, uint rate, uint duration)
         {
             var contractHandler = web3.Eth.GetContractHandler(CASHPOINT_CONTRACT_ADDRESS);
+            CashpointModel temp = new CashpointModel();
+
+            temp.AccountName = name;
+            temp.Latitude = latitude;
+            temp.Longitude = longitude;
+            temp.isCashPoint = true;
+            temp.PhoneNumber = phone;
+            temp.Rate = rate;
+            
 
             DateTime now = DateTime.Now;
             var endtime = now.AddDays(duration).ToString("F");
             
-            var receiptSending = await contractHandler.SendRequestAndWaitForReceiptAsync(new AddCashPointFunction()
-            { Name = name, Latitude = latitude, Longitude=longitude,Phone=phone,Rate=rate,Endtime = endtime });
+            //var receiptSending = await contractHandler.SendRequestAndWaitForReceiptAsync(new AddCashPointFunction()
+            //{CashPoint = temp});
 
-            return receiptSending.TransactionHash;
+            var query = await contractHandler
+            .QueryDeserializingToObjectAsync<AddCashPointFunction, AddCashPointOutputDTO>(
+                new AddCashPointFunction() { CashPoint = temp });
+
+                if (query.Update == true)
+                {
+                    var oldEnd = DateTime.Parse(query.EndTime);
+                    var newEnd = oldEnd.AddDays(duration).ToString("F");
+                    var receiptSending = await contractHandler
+                    .SendRequestAndWaitForReceiptAsync(new UpdateEndTimeFunction()
+                    { EndTime = newEnd});
+                    return newEnd;
+                }
+                else
+                {
+                    return query.EndTime;   
+                }
+            //return receiptSending.TransactionHash;
         }
 
         //public async Task<CashpointModel> GetCashPointsAsync()

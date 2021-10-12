@@ -101,7 +101,7 @@ namespace Wallet.ViewModels
         {
             CashpointsMap = new Xamarin.Forms.Maps.Map();
             await GetCurrentLocation();
-
+            
 
             //var MyLat = location.Latitude;
             //var MyLong = location.Longitude;

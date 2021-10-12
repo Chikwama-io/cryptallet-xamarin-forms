@@ -4,7 +4,7 @@ namespace Wallet.Models
     public class CashpointModel
     {
             public string AccountName { get; set; }
-            public string DefaultPubKey { get; set; }
+            public string DefaultAddress { get; set; }
             public bool isCashPoint { get; set; }
             public decimal Latitude { get; set; }
             public decimal Longitude { get; set; }
