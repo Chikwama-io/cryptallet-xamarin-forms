@@ -53,6 +53,10 @@ namespace Wallet.Services
         Task<TransactionModel[]> GetTransactionsAsync(bool sent = false);
 
         Task<string> TransferAsync(string from, string to, double amount);
+
+        //Task<CashpointModel[]> GetCashPointsAsync();
+
+        Task<string> AddCashPointAsync(string name, BigInteger latitude, BigInteger longitude, uint phone, uint rate, uint duration);
     }
 
     // The balance function message definition    
@@ -72,6 +76,29 @@ namespace Wallet.Services
         public BigInteger TokenAmount { get; set; }
     }
 
+    [Function("addCashPoint")]
+    public class AddCashPointFunction:FunctionMessage
+    {
+        [Parameter("string", "_name", 1)]
+        public string Name { get; set; }
+
+        [Parameter("int256", "_latitude", 2)]
+        public BigInteger Latitude { get; set; }
+
+        [Parameter("int256", "_longitude", 3)]
+        public BigInteger Longitude { get; set; }
+
+        [Parameter("uint256", "_phoneNumber", 4)]
+        public BigInteger Phone { get; set; }
+
+        [Parameter("uint256", "rate", 5)]
+        public BigInteger Rate { get; set; }
+
+        [Parameter("uint256", "endtime", 6)]
+        public string Endtime { get; set; }
+
+    }
+
     [Event("Transfer")]
     public class TransferEventDTO : IEventDTO
     {
@@ -88,6 +115,7 @@ namespace Wallet.Services
     public class AccountsManager : IAccountsManager
     {
         const string CONTRACT_ADDRESS = "0x51D46014D44E20F4d3D38218948b194365AC0A70";
+        const string CASHPOINT_CONTRACT_ADDRESS = "0x477667CDE1712Cbb698f414C464834303a3b2f0f";
 
         public string DefaultAccountAddress => DefaultAccount?.Address;
 
@@ -209,7 +237,25 @@ namespace Wallet.Services
                     return tt.Result.Select(x => x.Result).ToArray();
                 });
             });
+            }
+
+        public async Task<string> AddCashPointAsync(string name, BigInteger latitude, BigInteger longitude, uint phone, uint rate, uint duration)
+        {
+            var contractHandler = web3.Eth.GetContractHandler(CASHPOINT_CONTRACT_ADDRESS);
+
+            DateTime now = DateTime.Now;
+            var endtime = now.AddDays(duration).ToString("F");
+            
+            var receiptSending = await contractHandler.SendRequestAndWaitForReceiptAsync(new AddCashPointFunction()
+            { Name = name, Latitude = latitude, Longitude=longitude,Phone=phone,Rate=rate,Endtime = endtime });
+
+            return receiptSending.TransactionHash;
         }
+
+        //public async Task<CashpointModel> GetCashPointsAsync()
+        //{
+           
+        //}
 
         void Initialize()
         {
@@ -221,6 +267,10 @@ namespace Wallet.Services
             //standardTokenService = new StandardTokenService(web3, CONTRACT_ADDRESS);
             web3 = new Web3(DefaultAccount,"http://127.0.0.1:4444/");
         }
+
+        
+
+    
     }
 
 }
