@@ -87,7 +87,7 @@ namespace Wallet.Services
 
     public class AccountsManager : IAccountsManager
     {
-        const string CONTRACT_ADDRESS = "0x89B8d42Cf49cF6871315908f73c016E9B4e36A46";
+        const string CONTRACT_ADDRESS = "0x51D46014D44E20F4d3D38218948b194365AC0A70";
 
         public string DefaultAccountAddress => DefaultAccount?.Address;
 
