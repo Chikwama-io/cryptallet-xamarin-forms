@@ -102,13 +102,14 @@ namespace Wallet.Services
         public CashpointModel CashPoint { get; set; }
     }
 
-    [Function("UpdateEndTime")]
-    public class UpdateEndTimeFunction : FunctionMessage
+    [Function("UpdateCashPoint")]
+    public class UpdateCashPointFunction : FunctionMessage
     {
-        [Parameter("string", "endTime", 1)]
-        public string EndTime { get; set; }
+        [Parameter("tuple[]", "cashPoint", 1)]
+        public CashpointModel CashPoint { get; set; }
+    }
 
-    [FunctionOutput]
+        [FunctionOutput]
     public class AddCashPointOutputDTO : IFunctionOutputDTO
     {
         [Parameter("bool","update", 1)]
@@ -287,6 +288,7 @@ namespace Wallet.Services
             temp.PhoneNumber = phone;
             temp.Rate = rate;
             
+            
 
             //DateTime now = DateTime.Now;
             //var endtime = now.AddDays(duration).ToString("F");
@@ -302,9 +304,10 @@ namespace Wallet.Services
                 {
                     var oldEnd = DateTime.Parse(query.EndTime);
                     var newEnd = oldEnd.AddDays(duration).ToString("F");
+                    temp.EndTime = newEnd;
                     var receiptSending = await contractHandler
-                    .SendRequestAndWaitForReceiptAsync(new UpdateEndTimeFunction()
-                    { EndTime = newEnd});
+                    .SendRequestAndWaitForReceiptAsync(new UpdateCashPointFunction()
+                    { CashPoint = temp});
                     return newEnd;
                 }
                 else
@@ -357,7 +360,7 @@ namespace Wallet.Services
                 }
 
                 return cashPoints;
-            }
+        }
 
             void Initialize()
         {

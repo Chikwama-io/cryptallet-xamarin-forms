@@ -12,7 +12,7 @@ namespace Wallet.Models
             public BigInteger Longitude { get; set; }
             public uint PhoneNumber { get; set; }
             public decimal Rate { get; set; } //local currency to usd rate
-            public DateTime EndTime { get; set; } //when time as cashpoint will expire
+            public string EndTime { get; set; } //when time as cashpoint will expire
 
 
     }
