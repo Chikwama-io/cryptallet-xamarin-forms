@@ -107,7 +107,7 @@
                 HorizontalTextAlignment="Center" />
             <ContentView.GestureRecognizers>
                 <TapGestureRecognizer
-                    Command="{Binding BecomeCashpointCommand}" />
+                    Command="{Binding AddCashPointCommand}" />
             </ContentView.GestureRecognizers>
         </ContentView>
     </Grid> 

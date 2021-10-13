@@ -1,4 +1,7 @@
-﻿using System.Numerics;
+﻿using System;
+using System.Numerics;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Input;
 using Acr.UserDialogs;
 using Plugin.Share.Abstractions;
@@ -6,6 +9,7 @@ using Prism.Navigation;
 using Wallet.Core;
 using Wallet.Services;
 using Xamarin.Essentials;
+using Xamarin.Forms;
 
 namespace Wallet.ViewModels
 {
@@ -53,7 +57,9 @@ namespace Wallet.ViewModels
                 set { _Cost = value; OnPropertyChanged(); }
             }
 
-
+            double MyLat;
+            double MyLong;
+            CancellationTokenSource cts;
         //public double Cost => Duration * 1;
         public string DefaultAccountAddress => accountsManager.DefaultAccountAddress;
 
@@ -71,21 +77,61 @@ namespace Wallet.ViewModels
             }
 
 
-        //async Task ExecuteBecomeCashPointCommand()
-        //{
-        //    var location = await Geolocation.GetLastKnownLocationAsync();
-        //    var MyLat = location.Latitude;
-        //    var MyLong = location.Longitude;
+        ICommand _AddCashPointCommand;
+        public ICommand AddCashPointCommand
+        {
+            get { return (_AddCashPointCommand = _AddCashPointCommand ?? new Command<object>(ExecuteAddCashPointCommand, CanExecuteAddCashPointCommand)); }
+        }
+        bool CanExecuteAddCashPointCommand(object obj) => true;
+        async void ExecuteAddCashPointCommand(object obj)
+        {
+            userDialogs.ShowLoading("Adding cash point");
+            await GetCurrentLocation();
+            var result = await accountsManager.AddCashPointAsync(CashpointName, Nethereum.Util.UnitConversion.Convert.ToWei(MyLat), Nethereum.Util.UnitConversion.Convert.ToWei(MyLong),Phone,Rate,Duration);
+            userDialogs.Toast($"Cash point added, active until :{result}");
+            userDialogs.HideLoading();
+        }
 
-        //    BigInteger latitude = Nethereum.Util.UnitConversion.Convert.ToWei(MyLat);
-        //    BigInteger longitude = Nethereum.Util.UnitConversion.Convert.ToWei(MyLong);
+
+        async Task GetCurrentLocation()
+        {
+            try
+            {
+                var request = new GeolocationRequest(GeolocationAccuracy.Best, TimeSpan.FromSeconds(10));
+                cts = new CancellationTokenSource();
+                var location = await Geolocation.GetLocationAsync(request, cts.Token);
 
 
+                if (location != null)
+                {
+                    MyLat = location.Latitude;
+                    MyLong = location.Longitude;
+                    //Console.WriteLine($"Latitude: {location.Latitude}, Longitude: {location.Longitude}, Altitude: {location.Altitude}");
+                }
 
-        //    //var result = await accountsManager.BecomeCashPointAsync(DefaultAccountAddress, CashPointName, latitude, longitude, Phone, Rate, Duration);
-        //    //await navService.DisplayAlert("Send Result", $"tx:{result}", "ok", "cancel");
+                //return null;
+            }
+            catch (FeatureNotSupportedException fnsEx)
+            {
 
-        //}
+                // Handle not supported on device exception
+            }
+            catch (FeatureNotEnabledException fneEx)
+            {
+
+                // Handle not enabled on device exception
+            }
+            catch (PermissionException pEx)
+            {
+
+                // Handle permission exception
+            }
+            catch (Exception ex)
+            {
+
+                // Unable to get location
+            }
+        }
 
     }
 

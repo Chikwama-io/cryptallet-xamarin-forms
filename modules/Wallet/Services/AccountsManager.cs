@@ -57,7 +57,7 @@ namespace Wallet.Services
 
         Task<CashpointModel[]> GetCashPointsAsync();
 
-        Task<string> AddCashPointAsync(string name, BigInteger latitude, BigInteger longitude, uint phone, uint rate, uint duration);
+        Task<string> AddCashPointAsync(string name, BigInteger latitude, BigInteger longitude, uint phone, decimal rate, uint duration);
     }
 
     // The balance function message definition    
@@ -151,7 +151,7 @@ namespace Wallet.Services
     public class AccountsManager : IAccountsManager
     {
         const string CONTRACT_ADDRESS = "0x51D46014D44E20F4d3D38218948b194365AC0A70";
-        const string CASHPOINT_CONTRACT_ADDRESS = "0x477667CDE1712Cbb698f414C464834303a3b2f0f";
+        const string CASHPOINT_CONTRACT_ADDRESS = "0x4fEa663C0D4FE8C0B72791cC0b9Ce31bA1B05e3c";
 
         public string DefaultAccountAddress => DefaultAccount?.Address;
 
@@ -276,7 +276,7 @@ namespace Wallet.Services
             });
             }
 
-        public async Task<string> AddCashPointAsync(string name, BigInteger latitude, BigInteger longitude, uint phone, uint rate, uint duration)
+        public async Task<string> AddCashPointAsync(string name, BigInteger latitude, BigInteger longitude, uint phone, decimal rate, uint duration)
         {
             var contractHandler = web3.Eth.GetContractHandler(CASHPOINT_CONTRACT_ADDRESS);
             CashpointModel temp = new CashpointModel();

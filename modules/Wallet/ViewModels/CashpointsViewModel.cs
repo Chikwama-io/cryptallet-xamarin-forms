@@ -71,29 +71,34 @@ namespace Wallet.ViewModels
 
         async void GetCashPoints()
         {
-            IsFetching = true;
+            userDialogs.ShowLoading("Finding cash points");
             //var location = await Geolocation.GetLastKnownLocationAsync();
             //MyLat = location.Latitude;
             //MyLong = location.Longitude;
 
 
-            //_Cashpoint = await accountsManager.GetCashPointsAsync();
+            _Cashpoint = await accountsManager.GetCashPointsAsync();
             if (_Cashpoint.Length != 0)
             {
                 foreach (var cashpoint in _Cashpoint)
                 {
                     // Place a pin on the map for each cash point
-                    CashpointsMap.Pins.Add(new Pin
+                    var endTime = DateTime.Parse(cashpoint.EndTime);
+                    var now = DateTime.Now;
+                    if (endTime < now)
                     {
-                        Type = PinType.SearchResult,
-                        Label = cashpoint.AccountName + ": 0" + cashpoint.PhoneNumber + ", Local Currency to USD Rate:" + cashpoint.Rate,
-                        Position = new Position((double)cashpoint.Latitude, (double)cashpoint.Longitude)
-                    });
+                        CashpointsMap.Pins.Add(new Pin
+                        {
+                            Type = PinType.SearchResult,
+                            Label = cashpoint.AccountName + ": 0" + cashpoint.PhoneNumber + ", Local Currency to USD Rate:" + cashpoint.Rate + ", Until: "+ endTime.ToShortDateString(),
+                            Position = new Position((double)cashpoint.Latitude, (double)cashpoint.Longitude)
+                        });
+                    }
                 }
             }
 
 
-            IsFetching = false;
+            userDialogs.HideLoading();
 
         }
 
@@ -108,7 +113,7 @@ namespace Wallet.ViewModels
 
             // Center the map around users current location
             CashpointsMap.MoveToRegion(MapSpan.FromCenterAndRadius(new Position(MyLat, MyLong), Distance.FromKilometers(10.0)));
-            //GetCashPoints();
+            GetCashPoints();
         }
 
         CancellationTokenSource cts;
@@ -117,7 +122,7 @@ namespace Wallet.ViewModels
         {
             try
             {
-                var request = new GeolocationRequest(GeolocationAccuracy.Medium, TimeSpan.FromSeconds(10));
+                var request = new GeolocationRequest(GeolocationAccuracy.Best, TimeSpan.FromSeconds(10));
                 cts = new CancellationTokenSource();
                 var location = await Geolocation.GetLocationAsync(request, cts.Token);
 
