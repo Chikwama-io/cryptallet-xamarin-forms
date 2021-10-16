@@ -13,21 +13,9 @@
  *   See the License for the specific language governing permissions and
  *   limitations under the License.
  */
-//using System;
-//using System.Threading.Tasks;
-//using Nethereum.JsonRpc.Client;
-//using Nethereum.Web3;
-//using Nethereum.Web3.Accounts;
-//using Nethereum.StandardTokenEIP20.Events.DTO;
-//using Wallet.Core;
-//using Nethereum.RPC.Eth.DTOs;
-//using Nethereum.Hex.HexConvertors.Extensions;
+
 using Wallet.Models;
-//using System.Linq;
-//using Xamarin.Forms.Internals;
-//using Nethereum.Contracts;
-//using Nethereum.StandardTokenEIP20;
-//using Nethereum.StandardTokenEIP20.ContractDefinition;
+
 
 using System;
 using System.Numerics;
@@ -39,6 +27,8 @@ using Nethereum.Contracts;
 using Nethereum.Web3.Accounts;
 using Nethereum.RPC.Eth.DTOs;
 using System.Linq;
+using Nethereum.Hex.HexTypes;
+using System.Collections.Generic;
 
 namespace Wallet.Services
 {
@@ -60,6 +50,33 @@ namespace Wallet.Services
         Task<string> AddCashPointAsync(string name, BigInteger latitude, BigInteger longitude, uint phone, decimal rate, uint duration);
     }
 
+    public partial class CashPoint : CashPointBase { }
+
+
+    public class CashPointBase
+    {
+        [Parameter("string", "_name", 1)]
+        public virtual string Name { get; set; }
+
+        [Parameter("int", "_latitude", 2)]
+        public virtual BigInteger Latitude { get; set; }
+
+        [Parameter("int", "_longitude", 3)]
+        public virtual BigInteger Longitude { get; set; }
+
+        [Parameter("uint", "_phoneNumber", 4)]
+        public virtual int PhoneNumber { get; set; }
+
+        [Parameter("uint", "rate", 5)]
+        public virtual BigInteger Rate { get; set; }
+
+        [Parameter("string", "endtime", 6)]
+        public virtual string Endtime { get; set; }
+
+        [Parameter("bool", "isCashPoint", 7)]
+        public virtual bool IsCashPoint { get; set; }
+    }
+
     // The balance function message definition    
     [Function("balanceOf", "uint256")]
     public class BalanceOfFunction : FunctionMessage
@@ -77,7 +94,7 @@ namespace Wallet.Services
         public BigInteger TokenAmount { get; set; }
     }
 
-    [Function("Count", "uint256")]
+    [Function("count", "uint256")]
     public class Count : FunctionMessage
     {
 
@@ -89,42 +106,77 @@ namespace Wallet.Services
         [Parameter("uint256", "_index", 1)] public int Index { get; set; }
     }
 
-    [Function("cashpoints", "CashPoint")]
-    public class CashPoints : FunctionMessage
+    public partial class cashpointsFunction : cashpointsBase { }
+
+    [Function("getCashPoint", typeof(CashPointsOutputDTO))]
+    public class cashpointsBase : FunctionMessage
     {
-        [Parameter("string", "_address", 1)] public string Address { get; set; }
+        [Parameter("address", "_cashpoint", 1)] public virtual string Cashpoint { get; set; }
     }
 
     [Function("addCashPoint")]
-    public class AddCashPointFunction:FunctionMessage
+    public class AddCashPointFunction : FunctionMessage
     {
-        [Parameter("tuple[]", "cashPoint", 1)]
-        public CashpointModel CashPoint { get; set; }
+        [Parameter("string", "_name", 1)]
+        public string Name { get; set; }
+
+        [Parameter("int", "_latitude", 2)]
+        public BigInteger Latitude { get; set; }
+
+        [Parameter("int", "_longitude", 3)]
+        public BigInteger Longitude { get; set; }
+
+        [Parameter("uint", "_phoneNumber", 4)]
+        public BigInteger PhoneNumber { get; set; }
+
+        [Parameter("uint", "rate", 5)]
+        public BigInteger Rate { get; set; }
+
+        [Parameter("string", "endtime", 6)]
+        public string Endtime { get; set; }
     }
 
-    [Function("UpdateCashPoint")]
+    [Function("updateCashPoint")]
     public class UpdateCashPointFunction : FunctionMessage
     {
-        [Parameter("tuple[]", "cashPoint", 1)]
-        public CashpointModel CashPoint { get; set; }
-    }
+        [Parameter("string", "_name", 1)]
+        public string Name { get; set; }
 
-        [FunctionOutput]
-    public class AddCashPointOutputDTO : IFunctionOutputDTO
-    {
-        [Parameter("bool","update", 1)]
-        public bool Update { get; set; }
+        [Parameter("int", "_latitude", 2)]
+        public BigInteger Latitude { get; set; }
 
-        [Parameter("string", "endTime", 2)]
-        public string EndTime { get; set; }
+        [Parameter("int", "_longitude", 3)]
+        public BigInteger Longitude { get; set; }
+
+        [Parameter("uint", "_phoneNumber", 4)]
+        public BigInteger PhoneNumber { get; set; }
+
+        [Parameter("uint", "rate", 5)]
+        public BigInteger Rate { get; set; }
+
+        [Parameter("string", "endtime", 6)]
+        public string Endtime { get; set; }
     }
 
     [FunctionOutput]
-    public class CashPointsOutputDTO : IFunctionOutputDTO
+    public class AddCashPointOutputDTO : IFunctionOutputDTO
     {
-            [Parameter("tuple", "cashPoint", 1)]
-            public virtual CashpointModel CashPoint { get; set; }
 
+        [Parameter("string", "endTime", 1)]
+        public string EndTime { get; set; }
+
+        [Parameter("bool","update", 2)]
+        public bool Update { get; set; }
+        
+    }
+
+    public partial class CashPointsOutputDTO : CashPointsOutputDTOBase { }
+
+    [FunctionOutput]
+    public class CashPointsOutputDTOBase : IFunctionOutputDTO
+    {
+        [Parameter("tuple", "_cashpoint", 1)]
+        public virtual CashPoint CashPoint { get; set; }
     }
 
     [FunctionOutput]
@@ -135,7 +187,14 @@ namespace Wallet.Services
         public string Address { get; set; }
     }
 
-        [Event("Transfer")]
+    [FunctionOutput]
+    public class CountOutputDTO : IFunctionOutputDTO
+    {
+        [Parameter("uint256", "count", 1)]
+        public BigInteger Count { get; set; }
+    }
+
+    [Event("Transfer")]
     public class TransferEventDTO : IEventDTO
     {
         [Parameter("address", "_from", 1, true)]
@@ -150,14 +209,17 @@ namespace Wallet.Services
 
     public class AccountsManager : IAccountsManager
     {
-        const string CONTRACT_ADDRESS = "0x51D46014D44E20F4d3D38218948b194365AC0A70";
-        const string CASHPOINT_CONTRACT_ADDRESS = "0x4fEa663C0D4FE8C0B72791cC0b9Ce31bA1B05e3c";
-
+        const string CONTRACT_ADDRESS = "0x46Cb88e688cBd98c18F700ccF6430f511FBcF9Cc";
+        const string CASHPOINT_CONTRACT_ADDRESS = "0x310c1F3f17B3B8493116F71e81ccc25e67733181";
+        const string url = "http://127.0.0.1:4444/";
         public string DefaultAccountAddress => DefaultAccount?.Address;
 
         Account DefaultAccount => walletManager.Wallet?.GetAccount(0);
 
-        readonly IWalletManager walletManager;
+        string ABI = @"[{'anonymous':false,'inputs':[{'indexed':false,'internalType':'address','name':'cashpoint','type':'address'}],'name':'CreatedCashPoint','type':'event'},{'inputs':[{'internalType':'string','name':'name','type':'string'},{'internalType':'int256','name':'mylat','type':'int256'},{'internalType':'int256','name':'mylong','type':'int256'},{'internalType':'uint256','name':'phone','type':'uint256'},{'internalType':'uint256','name':'rate','type':'uint256'},{'internalType':'string','name':'endtime','type':'string'}],'name':'addCashPoint','outputs':[],'stateMutability':'nonpayable','type':'function'},{'inputs':[{'internalType':'address','name':'','type':'address'}],'name':'cashpoints','outputs':[{'internalType':'string','name':'_name','type':'string'},{'internalType':'int256','name':'_latitude','type':'int256'},{'internalType':'int256','name':'_longitude','type':'int256'},{'internalType':'uint256','name':'_phoneNumber','type':'uint256'},{'internalType':'uint256','name':'rate','type':'uint256'},{'internalType':'string','name':'endtime','type':'string'},{'internalType':'bool','name':'isCashPoint','type':'bool'}],'stateMutability':'view','type':'function'},{'inputs':[],'name':'count','outputs':[{'internalType':'uint256','name':'','type':'uint256'}],'stateMutability':'view','type':'function'},{'inputs':[{'internalType':'address','name':'Add','type':'address'}],'name':'getCashPoint','outputs':[{'components':[{'internalType':'string','name':'_name','type':'string'},{'internalType':'int256','name':'_latitude','type':'int256'},{'internalType':'int256','name':'_longitude','type':'int256'},{'internalType':'uint256','name':'_phoneNumber','type':'uint256'},{'internalType':'uint256','name':'rate','type':'uint256'},{'internalType':'string','name':'endtime','type':'string'},{'internalType':'bool','name':'isCashPoint','type':'bool'}],'internalType':'struct CashPoints.CashPoint','name':'_cashpoint','type':'tuple'}],'stateMutability':'view','type':'function'},{'inputs':[{'internalType':'uint256','name':'','type':'uint256'}],'name':'keys','outputs':[{'internalType':'address','name':'','type':'address'}],'stateMutability':'view','type':'function'},{'inputs':[{'internalType':'string','name':'name','type':'string'},{'internalType':'int256','name':'mylat','type':'int256'},{'internalType':'int256','name':'mylong','type':'int256'},{'internalType':'uint256','name':'phone','type':'uint256'},{'internalType':'uint256','name':'rate','type':'uint256'},{'internalType':'string','name':'endtime','type':'string'}],'name':'updateCashPoint','outputs':[],'stateMutability':'nonpayable','type':'function'}]";
+
+
+readonly IWalletManager walletManager;
         //StandardTokenService standardTokenService;
         Web3 web3;
 
@@ -207,7 +269,7 @@ namespace Wallet.Services
             //var receipt = await standardTokenService.TransferFromRequestAndWaitForReceiptAsync(from, to, new System.Numerics.BigInteger((int)amount));
             var receiverAddress = to;
             var transferHandler = web3.Eth.GetContractTransactionHandler<TransferFunction>();
-            var countQueryHandler = web3.Eth.GetContractQueryHandler<Count>();
+            
 
                 var transfer = new TransferFunction()
             {
@@ -251,7 +313,7 @@ namespace Wallet.Services
             //            BlockParameter.CreateEarliest(),
             //            BlockParameter.CreateLatest());
 
-            var changes = await transferEventHandler.GetAllChanges(filter);
+            var changes = await transferEventHandler.GetAllChangesAsync(filter);
 
                 var timestampTasks = changes.Select(x => Task.Factory.StartNew(async (state) =>
                 {
@@ -278,88 +340,115 @@ namespace Wallet.Services
 
         public async Task<string> AddCashPointAsync(string name, BigInteger latitude, BigInteger longitude, uint phone, decimal rate, uint duration)
         {
+            var account = new Account(DefaultAccount.PrivateKey, 33);
+            web3 = new Web3(account, url);
+            //web3.Eth.TransactionManager.UseLegacyAsDefault = true;
             var contractHandler = web3.Eth.GetContractHandler(CASHPOINT_CONTRACT_ADDRESS);
-            CashpointModel temp = new CashpointModel();
+            var updateCashPointHandler = web3.Eth.GetContractTransactionHandler<UpdateCashPointFunction>();
+            var addCashPointHandler = web3.Eth.GetContractTransactionHandler<AddCashPointFunction>();
+            //Contract CashPointContract = web3.Eth.GetContract(ABI, CASHPOINT_CONTRACT_ADDRESS);
+            DateTime now = DateTime.Now;
+            var endtime = now.AddDays(duration).ToString("F");
 
-            temp.AccountName = name;
-            temp.Latitude = latitude;
-            temp.Longitude = longitude;
-            temp.isCashPoint = true;
-            temp.PhoneNumber = phone;
-            temp.Rate = rate;
-            
-            
 
-            //DateTime now = DateTime.Now;
-            //var endtime = now.AddDays(duration).ToString("F");
-            
-            //var receiptSending = await contractHandler.SendRequestAndWaitForReceiptAsync(new AddCashPointFunction()
-            //{CashPoint = temp});
+            var thisCashPointsDetails = await contractHandler.QueryDeserializingToObjectAsync<cashpointsFunction, CashPointsOutputDTO>(new cashpointsFunction { Cashpoint = DefaultAccountAddress });
 
-            var query = await contractHandler
-            .QueryDeserializingToObjectAsync<AddCashPointFunction, AddCashPointOutputDTO>(
-                new AddCashPointFunction() { CashPoint = temp });
+            if (thisCashPointsDetails.CashPoint.IsCashPoint)
+            {
+                var oldEnd = DateTime.Parse(thisCashPointsDetails.CashPoint.Endtime);
+                endtime = oldEnd.AddDays(duration).ToString("F");
 
-                if (query.Update == true)
+                //var receiptSending = await contractHandler.SendRequestAndWaitForReceiptAsync(new UpdateCashPointFunction()
+                //{ Name = name, Latitude = latitude, Longitude = longitude, PhoneNumber = phone, Rate = Web3.Convert.ToWei(rate), Endtime = endtime });
+                var update = new UpdateCashPointFunction()
                 {
-                    var oldEnd = DateTime.Parse(query.EndTime);
-                    var newEnd = oldEnd.AddDays(duration).ToString("F");
-                    temp.EndTime = newEnd;
-                    var receiptSending = await contractHandler
-                    .SendRequestAndWaitForReceiptAsync(new UpdateCashPointFunction()
-                    { CashPoint = temp});
-                    return newEnd;
-                }
-                else
+                    Name = name,
+                    Latitude = latitude,
+                    Longitude = longitude,
+                    PhoneNumber = phone,
+                    Rate = Web3.Convert.ToWei(rate),
+                    Endtime = endtime
+
+                };
+                var transactionReceipt = await updateCashPointHandler.SendRequestAndWaitForReceiptAsync(CASHPOINT_CONTRACT_ADDRESS, update);
+
+
+                return transactionReceipt.TransactionHash;
+            }
+            else
+            {
+                var add = new AddCashPointFunction()
                 {
-                    return query.EndTime;   
-                }
-            //return receiptSending.TransactionHash;
+                    Name = name,
+                    Latitude = latitude,
+                    Longitude = longitude,
+                    PhoneNumber = phone,
+                    Rate = Web3.Convert.ToWei(rate),
+                    Endtime = endtime
+
+                };
+                var transactionReceipt = await addCashPointHandler.SendRequestAndWaitForReceiptAsync(CASHPOINT_CONTRACT_ADDRESS, add);
+
+
+                return transactionReceipt.TransactionHash;
+            }
         }
 
-        public string[] addresses;
-        public CashpointModel[] cashPoints;
+        //public string[] addresses;
+        
 
         public async Task<CashpointModel[]> GetCashPointsAsync()
         {
+            List<CashpointModel> cashPoints = new List<CashpointModel>();
+            var account = new Account(DefaultAccount.PrivateKey, 33);
+            web3 = new Web3(account, url);
             var contractHandler = web3.Eth.GetContractHandler(CASHPOINT_CONTRACT_ADDRESS);
-            var countQueryHandler = web3.Eth.GetContractQueryHandler<Count>();
-            var count = await countQueryHandler.QueryAsync<int>(CASHPOINT_CONTRACT_ADDRESS).ConfigureAwait(false);
+            var queryCount = await contractHandler.QueryDeserializingToObjectAsync<Count, CountOutputDTO>(new Count() { });
+            var count = queryCount.Count;
 
-                //var keysQueryHandler = web3.Eth.GetContractQueryHandler<Keys>();
-               
-                for (int x = 0; x < count; x++)
+            //var keysQueryHandler = web3.Eth.GetContractQueryHandler<Keys>();
+            if (count == 0)
+            {
+                return cashPoints.ToArray();
+            }
+            else
+            {
+                for (int x = 1; x <= count; x++)
                 {
 
-                    var query = await contractHandler.QueryDeserializingToObjectAsync<Keys, KeysOutputDTO>(
-                    new Keys() { Index = x });
+                    //int length = 0;
+                    var query = await contractHandler.QueryAsync<Keys, string>(new Keys() { Index = x });
 
-                    addresses[x] = query.Address;
-                }
+                    //addresses[length] = query;
+                    
 
+                    var thisCashPointsDetails = await contractHandler.QueryDeserializingToObjectAsync<cashpointsFunction, CashPointsOutputDTO>(new cashpointsFunction { Cashpoint = query });
 
-                for (int i = 0; i < addresses.Length; i++)
-                {
-                    var query = await contractHandler.QueryDeserializingToObjectAsync<CashPoints, CashPointsOutputDTO>(
-                    new CashPoints() { Address = addresses[i] });
+                    var thisCashPoint = thisCashPointsDetails.CashPoint;
 
-                    var thisCashPoint = query.CashPoint;
-
-                    CashpointModel cashpoint = new CashpointModel 
+                    CashpointModel thiscashpoint = new CashpointModel()
                     {
-                        AccountName = thisCashPoint.AccountName,
-                        Latitude = thisCashPoint.Latitude,
-                        Longitude = thisCashPoint.Longitude,
+                        AccountName = thisCashPoint.Name,
+                        Latitude = double.Parse(Web3.Convert.FromWei(thisCashPoint.Latitude).ToString()),
+                        Longitude = double.Parse(Web3.Convert.FromWei(thisCashPoint.Longitude).ToString()),
                         PhoneNumber = thisCashPoint.PhoneNumber,
-                        EndTime = thisCashPoint.EndTime,
-                        Rate = thisCashPoint.Rate,
-                        isCashPoint = thisCashPoint.isCashPoint
+                        EndTime = thisCashPoint.Endtime,
+                        Rate = Web3.Convert.FromWei(thisCashPoint.Rate),
+                        isCashPoint = thisCashPoint.IsCashPoint
                     };
 
-                    cashPoints[i] = cashpoint;
-                }
+                    cashPoints.Add(thiscashpoint);
+                    //length++;
 
-                return cashPoints;
+
+                }
+            }
+
+
+               
+
+                return cashPoints.ToArray();
+            
         }
 
             void Initialize()
@@ -373,9 +462,9 @@ namespace Wallet.Services
             web3 = new Web3(DefaultAccount,"http://127.0.0.1:4444/");
         }
 
-        
 
-    
+
+
     }
 
 }

@@ -78,19 +78,19 @@ namespace Wallet.ViewModels
 
 
             _Cashpoint = await accountsManager.GetCashPointsAsync();
-            if (_Cashpoint.Length != 0)
+            if (!(_Cashpoint.Length == 0)&&!(_Cashpoint==null))
             {
                 foreach (var cashpoint in _Cashpoint)
                 {
                     // Place a pin on the map for each cash point
                     var endTime = DateTime.Parse(cashpoint.EndTime);
                     var now = DateTime.Now;
-                    if (endTime < now)
+                    if (endTime > now)
                     {
                         CashpointsMap.Pins.Add(new Pin
                         {
                             Type = PinType.SearchResult,
-                            Label = cashpoint.AccountName + ": 0" + cashpoint.PhoneNumber + ", Local Currency to USD Rate:" + cashpoint.Rate + ", Until: "+ endTime.ToShortDateString(),
+                            Label = cashpoint.AccountName + ": 0" + cashpoint.PhoneNumber + ", USD Rate:" + cashpoint.Rate + ", Until: "+ endTime.ToShortDateString(),
                             Position = new Position((double)cashpoint.Latitude, (double)cashpoint.Longitude)
                         });
                     }
@@ -105,8 +105,10 @@ namespace Wallet.ViewModels
         async void ShowMap()
         {
             CashpointsMap = new Xamarin.Forms.Maps.Map();
-            await GetCurrentLocation();
-            
+            var location = await Geolocation.GetLocationAsync();
+            MyLat = location.Latitude;
+            MyLong = location.Longitude;
+
 
             //var MyLat = location.Latitude;
             //var MyLong = location.Longitude;
@@ -116,47 +118,47 @@ namespace Wallet.ViewModels
             GetCashPoints();
         }
 
-        CancellationTokenSource cts;
+        //CancellationTokenSource cts;
 
-        async Task GetCurrentLocation()
-        {
-            try
-            {
-                var request = new GeolocationRequest(GeolocationAccuracy.Best, TimeSpan.FromSeconds(10));
-                cts = new CancellationTokenSource();
-                var location = await Geolocation.GetLocationAsync(request, cts.Token);
+        //async Task GetCurrentLocation()
+        //{
+        //    try
+        //    {
+        //        var request = new GeolocationRequest(GeolocationAccuracy.Best, TimeSpan.FromSeconds(10));
+        //        cts = new CancellationTokenSource();
+        //        var location = await Geolocation.GetLocationAsync(request, cts.Token);
 
                 
-                if (location != null)
-                {
-                    MyLat = location.Latitude;
-                    MyLong = location.Longitude;
-                    //Console.WriteLine($"Latitude: {location.Latitude}, Longitude: {location.Longitude}, Altitude: {location.Altitude}");
-                }
+        //        if (location != null)
+        //        {
+        //            MyLat = location.Latitude;
+        //            MyLong = location.Longitude;
+        //            //Console.WriteLine($"Latitude: {location.Latitude}, Longitude: {location.Longitude}, Altitude: {location.Altitude}");
+        //        }
 
-                //return null;
-            }
-            catch (FeatureNotSupportedException fnsEx)
-            {
+        //        //return null;
+        //    }
+        //    catch (FeatureNotSupportedException fnsEx)
+        //    {
                 
-                // Handle not supported on device exception
-            }
-            catch (FeatureNotEnabledException fneEx)
-            {
+        //        // Handle not supported on device exception
+        //    }
+        //    catch (FeatureNotEnabledException fneEx)
+        //    {
                 
-                // Handle not enabled on device exception
-            }
-            catch (PermissionException pEx)
-            {
+        //        // Handle not enabled on device exception
+        //    }
+        //    catch (PermissionException pEx)
+        //    {
                 
-                // Handle permission exception
-            }
-            catch (Exception ex)
-            {
+        //        // Handle permission exception
+        //    }
+        //    catch (Exception ex)
+        //    {
                 
-                // Unable to get location
-            }
-        }
+        //        // Unable to get location
+        //    }
+        //}
 
         //protected override void OnDisappearing()
         //{

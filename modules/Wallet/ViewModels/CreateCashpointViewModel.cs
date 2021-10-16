@@ -86,52 +86,54 @@ namespace Wallet.ViewModels
         async void ExecuteAddCashPointCommand(object obj)
         {
             userDialogs.ShowLoading("Adding cash point");
-            await GetCurrentLocation();
+            var location = await Geolocation.GetLocationAsync();
+            MyLat = location.Latitude; 
+            MyLong = location.Longitude;
             var result = await accountsManager.AddCashPointAsync(CashpointName, Nethereum.Util.UnitConversion.Convert.ToWei(MyLat), Nethereum.Util.UnitConversion.Convert.ToWei(MyLong),Phone,Rate,Duration);
             userDialogs.Toast($"Cash point added, active until :{result}");
             userDialogs.HideLoading();
         }
 
 
-        async Task GetCurrentLocation()
-        {
-            try
-            {
-                var request = new GeolocationRequest(GeolocationAccuracy.Best, TimeSpan.FromSeconds(10));
-                cts = new CancellationTokenSource();
-                var location = await Geolocation.GetLocationAsync(request, cts.Token);
+        //async Task GetCurrentLocation()
+        //{
+        //    try
+        //    {
+        //        var request = new GeolocationRequest(GeolocationAccuracy.Medium, TimeSpan.FromSeconds(10));
+        //        cts = new CancellationTokenSource();
+        //        var location = await Geolocation.GetLocationAsync(request, cts.Token);
 
 
-                if (location != null)
-                {
-                    MyLat = location.Latitude;
-                    MyLong = location.Longitude;
-                    //Console.WriteLine($"Latitude: {location.Latitude}, Longitude: {location.Longitude}, Altitude: {location.Altitude}");
-                }
+        //        if (location != null)
+        //        {
+        //            MyLat = location.Latitude;
+        //            MyLong = location.Longitude;
+        //            //Console.WriteLine($"Latitude: {location.Latitude}, Longitude: {location.Longitude}, Altitude: {location.Altitude}");
+        //        }
 
-                //return null;
-            }
-            catch (FeatureNotSupportedException fnsEx)
-            {
+        //        //return null;
+        //    }
+        //    catch (FeatureNotSupportedException fnsEx)
+        //    {
 
-                // Handle not supported on device exception
-            }
-            catch (FeatureNotEnabledException fneEx)
-            {
+        //        // Handle not supported on device exception
+        //    }
+        //    catch (FeatureNotEnabledException fneEx)
+        //    {
 
-                // Handle not enabled on device exception
-            }
-            catch (PermissionException pEx)
-            {
+        //        // Handle not enabled on device exception
+        //    }
+        //    catch (PermissionException pEx)
+        //    {
 
-                // Handle permission exception
-            }
-            catch (Exception ex)
-            {
+        //        // Handle permission exception
+        //    }
+        //    catch (Exception ex)
+        //    {
 
-                // Unable to get location
-            }
-        }
+        //        // Unable to get location
+        //    }
+        //}
 
     }
 
