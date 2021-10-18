@@ -59,7 +59,7 @@ namespace Wallet.ViewModels
 
             double MyLat;
             double MyLong;
-            CancellationTokenSource cts;
+            //CancellationTokenSource cts;
         //public double Cost => Duration * 1;
         public string DefaultAccountAddress => accountsManager.DefaultAccountAddress;
 

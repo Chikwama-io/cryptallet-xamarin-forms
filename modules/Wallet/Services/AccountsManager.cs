@@ -350,7 +350,7 @@ readonly IWalletManager walletManager;
             DateTime now = DateTime.Now;
             var endtime = now.AddDays(duration).ToString("F");
 
-
+            
             var thisCashPointsDetails = await contractHandler.QueryDeserializingToObjectAsync<cashpointsFunction, CashPointsOutputDTO>(new cashpointsFunction { Cashpoint = DefaultAccountAddress });
 
             if (thisCashPointsDetails.CashPoint.IsCashPoint)

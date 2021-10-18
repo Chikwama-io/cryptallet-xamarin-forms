@@ -22,6 +22,7 @@ using Plugin.Share.Abstractions;
 using Prism.Navigation;
 using Acr.UserDialogs;
 using System.Threading.Tasks;
+using Xamarin.Essentials;
 
 namespace Wallet.ViewModels
 {
@@ -196,6 +197,14 @@ namespace Wallet.ViewModels
 
     partial class WalletViewModel
     {
+        private Uri _Url;
+
+        public Uri Url
+        {
+            get { return _Url; }
+            set { _Url = value; }
+        }
+
         ICommand _ViewHistoryCommand;
         public ICommand ViewHistoryCommand
         {
@@ -204,7 +213,10 @@ namespace Wallet.ViewModels
         bool CanExecuteViewHistoryCommand(object obj) => true;
         async void ExecuteViewHistoryCommand(object obj)
         {
-            await navigationService.NavigateAsync(NavigationKeys.WalletViewHistory);
+            //await navigationService.NavigateAsync(NavigationKeys.WalletViewHistory);
+            Url = new Uri("https://explorer.testnet.rsk.co/address/" + DefaultAccountAddress);
+            await Browser.OpenAsync(Url, BrowserLaunchMode.SystemPreferred);
+        
         }
     }
 }

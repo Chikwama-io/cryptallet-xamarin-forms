@@ -3,15 +3,33 @@ using System.Windows.Input;
 using Acr.UserDialogs;
 using Plugin.Share.Abstractions;
 using Prism.Navigation;
+using Wallet.Core;
+using Wallet.Models;
 using Wallet.Services;
 using Xamarin.Essentials;
 using Xamarin.Forms;
 
+
+
 namespace Wallet.ViewModels
 {
-    public class MainViewModel
+    public class MainViewModel:ViewModelBase
     {
         public string DefaultAccountAddress => accountsManager.DefaultAccountAddress;
+
+        CashpointModel[] _CashPoints;
+        public CashpointModel[] CashPoints
+        {
+            get => _CashPoints;
+            set => SetProperty(ref _CashPoints, value);
+        }
+
+        bool _IsFetching;
+        public bool IsFetching
+        {
+            get => _IsFetching;
+            set => SetProperty(ref _IsFetching, value);
+        }
 
         readonly IAccountsManager accountsManager;
         readonly INavigationService navigationService;
@@ -28,7 +46,25 @@ namespace Wallet.ViewModels
             this.navigationService = navigationService;
             this.share = share;
             this.userDialogs = userDialogs;
+            ShouldShowNavigationBar = true;
         }
+
+        public override void OnNavigatedTo(INavigationParameters parameters)
+        {
+            base.OnNavigatedTo(parameters);
+
+            LoadData();
+        }
+
+        async void LoadData()
+        {
+            userDialogs.ShowLoading("Finding Cash points");
+
+            CashPoints = await accountsManager.GetCashPointsAsync();
+
+            userDialogs.HideLoading();
+        }
+
 
         ICommand _ShareCommand;
         public ICommand ShareCommand

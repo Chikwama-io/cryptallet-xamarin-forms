@@ -27,6 +27,9 @@
             Grid.Column="1"
             VerticalOptions="Center"
             Spacing="0">
+             <ContentView Padding="0,20,0,20" VerticalOptions="FillAndExpand">
+                    <Image Source="Icon100.png" VerticalOptions="Center" />
+                </ContentView>
             <Label
                 Text="CHIKWAMA"
                 FontSize="36"
@@ -114,7 +117,7 @@
                 BackgroundColor="{StaticResource ColorPrimary}">
                 <Label
                     Text="UNLOCK"
-                    TextColor="White"
+                    TextColor="{StaticResource ColorAccent}"
                     FontSize="{StaticResource FontSizeNormal}"
                     HorizontalTextAlignment="Center" />
                 <ContentView.GestureRecognizers>
@@ -134,6 +137,10 @@
                 x:Key="ColorTextPrimary">#FFFFF</Color>
             <Color
                 x:Key="ColorTextSecondary">#B2B2B2</Color>
+            <Color
+                x:Key="ColorAccent">#FFEB0F</Color>
+            <Color
+                x:Key="ColorTextAccent">#F5AD00</Color>
             <x:Double
                 x:Key="FontSizeNormal">16</x:Double>
             <x:Double

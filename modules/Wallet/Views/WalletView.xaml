@@ -164,7 +164,7 @@
                     Height="{StaticResource EntryRowHeight}" />
             </Grid.RowDefinitions>
             <Label
-                Text="Send some dollars on chain"
+                Text="Send some dollar on chain"
                 TextColor="Black"
                 FontSize="{StaticResource FontSizeLarge}" />
             <Entry
