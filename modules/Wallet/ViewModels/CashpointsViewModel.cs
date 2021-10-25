@@ -84,16 +84,13 @@ namespace Wallet.ViewModels
                 {
                     // Place a pin on the map for each cash point
                     var endTime = DateTime.Parse(cashpoint.EndTime);
-                    var now = DateTime.Now;
-                    if (endTime > now)
-                    {
-                        CashpointsMap.Pins.Add(new Pin
+                    CashpointsMap.Pins.Add(new Pin
                         {
                             Type = PinType.SearchResult,
                             Label = cashpoint.AccountName + ": 0" + cashpoint.PhoneNumber + ", USD Rate:" + cashpoint.Rate + ", Until: "+ endTime.ToShortDateString(),
                             Position = new Position((double)cashpoint.Latitude, (double)cashpoint.Longitude)
                         });
-                    }
+                    
                 }
             }
 

@@ -36,7 +36,7 @@ namespace Wallet.Controls
             set { SetValue(CommandProperty, value); }
         }
 
-        static readonly Color ColorPrimary = Color.FromHex("3574FA");
+        static readonly Color ColorPrimary = Color.FromHex("#7C067C");
         static readonly Color ColorTextAccent = Color.FromHex("384951");
         static readonly Color ColorTextSecondary = Color.FromHex("b2b2b2");
 

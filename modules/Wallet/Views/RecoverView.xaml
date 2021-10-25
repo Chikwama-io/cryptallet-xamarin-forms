@@ -7,18 +7,20 @@
     BackgroundColor="White">
     <ContentPage.Resources>
         <ResourceDictionary>
+            <Color x:Key="Primary">#7c067c</Color>
+
             <Color
-                x:Key="ColorPrimary">#3574FA</Color>
+                x:Key="ColorPrimary">#7C067C</Color>
             <Color
-                x:Key="ColorTextPrimary">#FFFFFF</Color>
+                x:Key="ColorAccent">#FFEB0F</Color>
             <Color
-                x:Key="ColorTextAccent">#384951</Color>
+                x:Key="ColorTextAccent">#FFFFF</Color>
+            <Color
+                x:Key="ColorTextPrimary">#FFFFF</Color>
             <Color
                 x:Key="ColorTextSecondary">#B2B2B2</Color>
             <x:Double
                 x:Key="FontSizeNormal">16</x:Double>
-            <x:Double
-                x:Key="FontSizeXlarge">26</x:Double>
             <x:Double
                 x:Key="FontSizeSmall">14</x:Double>
             <OnPlatform
@@ -46,7 +48,7 @@
                 FontSize="{StaticResource FontSizeXlarge}" />
             <Label
                 Text="Please enter your paper key to reset your PIN."
-                TextColor="{StaticResource ColorTextAccent}"
+                TextColor="{StaticResource ColorTextSecondary}"
                 FontSize="{StaticResource FontSizeNormal}" />
         </StackLayout>
         <Grid
@@ -65,7 +67,7 @@
             <Entry
                 Text="{Binding Words}"
                 IsPassword="false"
-                Placeholder="Enter the payperkey" />
+                Placeholder="Enter the paperkey" />
             <Entry
                 Grid.Row="1"
                 Text="{Binding Passcode}"
@@ -84,7 +86,7 @@
             BackgroundColor="{StaticResource ColorPrimary}">
             <Label
                 Text="RESET PIN"
-                TextColor="{StaticResource ColorTextPrimary}"
+                TextColor="{StaticResource ColorAccent}"
                 FontSize="{StaticResource FontSizeNormal}"
                 HorizontalTextAlignment="Center" />
             <ContentView.GestureRecognizers>

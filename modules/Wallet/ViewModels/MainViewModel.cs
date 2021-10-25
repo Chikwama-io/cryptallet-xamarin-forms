@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Windows.Input;
 using Acr.UserDialogs;
 using Plugin.Share.Abstractions;
@@ -8,12 +10,11 @@ using Wallet.Models;
 using Wallet.Services;
 using Xamarin.Essentials;
 using Xamarin.Forms;
-
-
+using Xamarin.Forms.Maps;
 
 namespace Wallet.ViewModels
 {
-    public class MainViewModel:ViewModelBase
+    public class MainViewModel : ViewModelBase
     {
         public string DefaultAccountAddress => accountsManager.DefaultAccountAddress;
 
@@ -23,6 +24,10 @@ namespace Wallet.ViewModels
             get => _CashPoints;
             set => SetProperty(ref _CashPoints, value);
         }
+
+        
+        public string City => accountsManager.ThisCity;
+       
 
         bool _IsFetching;
         public bool IsFetching
@@ -46,22 +51,26 @@ namespace Wallet.ViewModels
             this.navigationService = navigationService;
             this.share = share;
             this.userDialogs = userDialogs;
-            ShouldShowNavigationBar = true;
+            ShouldShowNavigationBar = false;
         }
 
         public override void OnNavigatedTo(INavigationParameters parameters)
         {
             base.OnNavigatedTo(parameters);
 
-            LoadData();
+            
+            LoadCashPoints();
+            
         }
 
-        async void LoadData()
+        
+
+        async void LoadCashPoints()
         {
             userDialogs.ShowLoading("Finding Cash points");
-
-            CashPoints = await accountsManager.GetCashPointsAsync();
-
+            List<CashpointModel> tempList = new List<CashpointModel>();
+            CashpointModel[] temp = await accountsManager.GetCashPointsAsync();
+            CashPoints = temp;
             userDialogs.HideLoading();
         }
 

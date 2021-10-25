@@ -29,13 +29,14 @@ using Nethereum.RPC.Eth.DTOs;
 using System.Linq;
 using Nethereum.Hex.HexTypes;
 using System.Collections.Generic;
+using Xamarin.Essentials;
 
 namespace Wallet.Services
 {
     public interface IAccountsManager
     {
         string DefaultAccountAddress { get; }
-
+        string ThisCity { get; }
         Task<string[]> GetAccountsAsync();
 
         Task<decimal> GetTokensAsync(string accountAddress);
@@ -211,9 +212,11 @@ namespace Wallet.Services
     {
         const string CONTRACT_ADDRESS = "0x46Cb88e688cBd98c18F700ccF6430f511FBcF9Cc";
         const string CASHPOINT_CONTRACT_ADDRESS = "0x310c1F3f17B3B8493116F71e81ccc25e67733181";
-        const string url = "http://127.0.0.1:4444/";
+        const string url = "http://127.0.0.1:4444";
         public string DefaultAccountAddress => DefaultAccount?.Address;
+        public string ThisCity=>City;
 
+        string City;
         Account DefaultAccount => walletManager.Wallet?.GetAccount(0);
 
         string ABI = @"[{'anonymous':false,'inputs':[{'indexed':false,'internalType':'address','name':'cashpoint','type':'address'}],'name':'CreatedCashPoint','type':'event'},{'inputs':[{'internalType':'string','name':'name','type':'string'},{'internalType':'int256','name':'mylat','type':'int256'},{'internalType':'int256','name':'mylong','type':'int256'},{'internalType':'uint256','name':'phone','type':'uint256'},{'internalType':'uint256','name':'rate','type':'uint256'},{'internalType':'string','name':'endtime','type':'string'}],'name':'addCashPoint','outputs':[],'stateMutability':'nonpayable','type':'function'},{'inputs':[{'internalType':'address','name':'','type':'address'}],'name':'cashpoints','outputs':[{'internalType':'string','name':'_name','type':'string'},{'internalType':'int256','name':'_latitude','type':'int256'},{'internalType':'int256','name':'_longitude','type':'int256'},{'internalType':'uint256','name':'_phoneNumber','type':'uint256'},{'internalType':'uint256','name':'rate','type':'uint256'},{'internalType':'string','name':'endtime','type':'string'},{'internalType':'bool','name':'isCashPoint','type':'bool'}],'stateMutability':'view','type':'function'},{'inputs':[],'name':'count','outputs':[{'internalType':'uint256','name':'','type':'uint256'}],'stateMutability':'view','type':'function'},{'inputs':[{'internalType':'address','name':'Add','type':'address'}],'name':'getCashPoint','outputs':[{'components':[{'internalType':'string','name':'_name','type':'string'},{'internalType':'int256','name':'_latitude','type':'int256'},{'internalType':'int256','name':'_longitude','type':'int256'},{'internalType':'uint256','name':'_phoneNumber','type':'uint256'},{'internalType':'uint256','name':'rate','type':'uint256'},{'internalType':'string','name':'endtime','type':'string'},{'internalType':'bool','name':'isCashPoint','type':'bool'}],'internalType':'struct CashPoints.CashPoint','name':'_cashpoint','type':'tuple'}],'stateMutability':'view','type':'function'},{'inputs':[{'internalType':'uint256','name':'','type':'uint256'}],'name':'keys','outputs':[{'internalType':'address','name':'','type':'address'}],'stateMutability':'view','type':'function'},{'inputs':[{'internalType':'string','name':'name','type':'string'},{'internalType':'int256','name':'mylat','type':'int256'},{'internalType':'int256','name':'mylong','type':'int256'},{'internalType':'uint256','name':'phone','type':'uint256'},{'internalType':'uint256','name':'rate','type':'uint256'},{'internalType':'string','name':'endtime','type':'string'}],'name':'updateCashPoint','outputs':[],'stateMutability':'nonpayable','type':'function'}]";
@@ -405,7 +408,7 @@ readonly IWalletManager walletManager;
             var contractHandler = web3.Eth.GetContractHandler(CASHPOINT_CONTRACT_ADDRESS);
             var queryCount = await contractHandler.QueryDeserializingToObjectAsync<Count, CountOutputDTO>(new Count() { });
             var count = queryCount.Count;
-
+            GetCity();
             //var keysQueryHandler = web3.Eth.GetContractQueryHandler<Keys>();
             if (count == 0)
             {
@@ -425,19 +428,30 @@ readonly IWalletManager walletManager;
                     var thisCashPointsDetails = await contractHandler.QueryDeserializingToObjectAsync<cashpointsFunction, CashPointsOutputDTO>(new cashpointsFunction { Cashpoint = query });
 
                     var thisCashPoint = thisCashPointsDetails.CashPoint;
+                    var lat = double.Parse(Web3.Convert.FromWei(thisCashPoint.Latitude).ToString());
+                    var longi = double.Parse(Web3.Convert.FromWei(thisCashPoint.Longitude).ToString());
+                    var location = new Location(lat, longi);
+                    var placemarks = await Geocoding.GetPlacemarksAsync(location);
+                    var placemark = placemarks?.FirstOrDefault();
 
-                    CashpointModel thiscashpoint = new CashpointModel()
+                   
+                        var endTime = DateTime.Parse(thisCashPoint.Endtime);
+                    var now = DateTime.Now;
+                    if (endTime > now && placemark.Locality == City)
                     {
-                        AccountName = thisCashPoint.Name,
-                        Latitude = double.Parse(Web3.Convert.FromWei(thisCashPoint.Latitude).ToString()),
-                        Longitude = double.Parse(Web3.Convert.FromWei(thisCashPoint.Longitude).ToString()),
-                        PhoneNumber = thisCashPoint.PhoneNumber,
-                        EndTime = thisCashPoint.Endtime,
-                        Rate = Web3.Convert.FromWei(thisCashPoint.Rate),
-                        isCashPoint = thisCashPoint.IsCashPoint
-                    };
+                        CashpointModel thiscashpoint = new CashpointModel()
+                        {
+                            AccountName = thisCashPoint.Name,
+                            Latitude = lat,
+                            Longitude = longi,
+                            PhoneNumber = thisCashPoint.PhoneNumber,
+                            EndTime = thisCashPoint.Endtime,
+                            Rate = Web3.Convert.FromWei(thisCashPoint.Rate),
+                            isCashPoint = thisCashPoint.IsCashPoint
+                        };
 
-                    cashPoints.Add(thiscashpoint);
+                        cashPoints.Add(thiscashpoint);
+                    }
                     //length++;
 
 
@@ -451,7 +465,15 @@ readonly IWalletManager walletManager;
             
         }
 
-            void Initialize()
+        async void GetCity()
+        {
+            var location = await Geolocation.GetLocationAsync();
+            var placemarks = await Geocoding.GetPlacemarksAsync(location);
+            var placemark = placemarks?.FirstOrDefault();
+            City = placemark.Locality;
+         
+        }
+        void Initialize()
         {
             //var client = new RpcClient(new Uri("http://192.168.12.154:8545"));//iOS
             //var client = new RpcClient(new Uri("http://10.0.2.2:8545"));//ANDROID
@@ -459,7 +481,7 @@ readonly IWalletManager walletManager;
 
             //web3 = new Web3(DefaultAccount, client);
             //standardTokenService = new StandardTokenService(web3, CONTRACT_ADDRESS);
-            web3 = new Web3(DefaultAccount,"http://127.0.0.1:4444/");
+            web3 = new Web3(DefaultAccount,url);
         }
 
 

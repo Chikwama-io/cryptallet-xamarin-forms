@@ -38,16 +38,16 @@ namespace Wallet.iOS
 
         void SetupTheme()
         {
-            var colorPrimary = UIColor.FromRGB(0x35 / 255f, 0x74 / 255f, 0xFA / 255f);
+            var colorPrimary = UIColor.FromRGB(124,6,124);
             var colorTextPrimary = UIColor.White;
 
             UINavigationBar.Appearance.BackgroundColor = colorPrimary;
             UINavigationBar.Appearance.BarTintColor = colorPrimary;
-            UINavigationBar.Appearance.TintColor = colorTextPrimary;
+            UINavigationBar.Appearance.TintColor = colorPrimary;
 
             UINavigationBar.Appearance.TitleTextAttributes = new UIStringAttributes()
             {
-                ForegroundColor = colorTextPrimary
+                ForegroundColor = colorPrimary
             };
         }
     }

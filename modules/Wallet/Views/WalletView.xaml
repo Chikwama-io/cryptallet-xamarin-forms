@@ -5,7 +5,7 @@
     xmlns:converters="clr-namespace:Wallet.Converters"
     xmlns:zxingCommon="clr-namespace:ZXing.Common;assembly=zxing.portable"
     xmlns:zxing="clr-namespace:ZXing.Net.Mobile.Forms;assembly=ZXing.Net.Mobile.Forms"
-    Title="Cryptallet"
+    Title="Wallet"
     x:Class="Wallet.Views.WalletView">
     <ContentPage.Resources>
         <ResourceDictionary>
@@ -31,7 +31,8 @@
           
             <Color
                 x:Key="ColorTextAccent">#F5ad00</Color>
-
+            <Color
+                x:Key="ColorAccent">#FFEB0F</Color>
       
             <x:Double
                 x:Key="FontSizeXlarge">26</x:Double>
@@ -58,7 +59,7 @@
                 Height="3*" />
         </Grid.RowDefinitions>
         <Grid
-            Margin="24,48"
+            Margin="45,80"
             Grid.RowSpan="2">
             <Grid.RowDefinitions>
                 <RowDefinition
@@ -114,7 +115,7 @@
             Grid.RowSpan="2">
             <Grid.RowDefinitions>
                 <RowDefinition
-                    Height="144" />
+                    Height="50" />
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition
@@ -135,7 +136,7 @@
             Padding="16,8">
             <Label
                 Text="History"
-                TextColor="White"
+                TextColor="{StaticResource ColorAccent}"
                 HorizontalTextAlignment="Center">
                 <Label.GestureRecognizers>
                     <TapGestureRecognizer
@@ -150,7 +151,7 @@
         <Grid
             IsVisible="{Binding Sendable}"
             Grid.Row="1"
-            Padding="24, 48"
+            Padding="24, 24"
             RowSpacing="8"
             BackgroundColor="#FAFAFA">
             <Grid.RowDefinitions>
@@ -161,7 +162,7 @@
                 <RowDefinition
                     Height="{StaticResource EntryRowHeight}" />
                 <RowDefinition
-                    Height="{StaticResource EntryRowHeight}" />
+                    Height="100" />
             </Grid.RowDefinitions>
             <Label
                 Text="Send some dollar on chain"
@@ -191,12 +192,17 @@
                 Placeholder="Enter amout to send" />
             <Label
                 Grid.Row="3"
-                Margin="5,11,5,0"
+                
+                Margin="0,40,5,0"
                 VerticalTextAlignment="Start"
+                HorizontalTextAlignment="Center"
                 Text="{Binding StringFormat= 'They receive {0:#,##0.00}', Path='SendingAmount', Converter={StaticResource NXTtoUSDConverter}}"
                 TextColor="{StaticResource ColorTextAccent}"
                 FontSize="{StaticResource FontSizeNormal}" />
-                    <Label Grid.Row="3" Margin="5,35,5,0" TextColor="{StaticResource ColorTextAccent}" Text="{Binding  StringFormat= 'Transaction fee {0:#,##0.00}', Path='Fee', Converter={StaticResource FeeCalculator}}" FontSize="{StaticResource FontSizeNormal}"/>
+                    <Label Grid.Row="3" HorizontalTextAlignment="Center" Margin="20,70,5,0" TextColor="{StaticResource ColorTextAccent}" Text="{Binding  StringFormat= 'Transaction fee {0:#,##0.00}', Path='Fee', Converter={StaticResource FeeCalculator}}" FontSize="{StaticResource FontSizeNormal}"/>
+        </Grid>
+        <Grid>
+
         </Grid>
         <Label
             IsVisible="{Binding Sendable, Converter={StaticResource BooleanInversedConverter}}"
@@ -214,7 +220,7 @@
             BackgroundColor="{StaticResource ColorPrimary}">
             <Label
                 Text="SEND"
-                TextColor="White"
+                TextColor="{StaticResource ColorAccent}"
                 FontSize="{StaticResource FontSizeNormal}"
                 HorizontalTextAlignment="Center" />
             <ContentView.GestureRecognizers>
