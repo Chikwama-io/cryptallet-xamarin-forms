@@ -10,6 +10,7 @@ using Xamarin.Forms.Maps;
 using Wallet.Models;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Input;
 
 namespace Wallet.ViewModels
 {
@@ -68,6 +69,16 @@ namespace Wallet.ViewModels
 
         CashpointModel[] _Cashpoint;
 
+        ICommand _SellCommand;
+        public ICommand SellCommand
+        {
+            get { return (_SellCommand = _SellCommand ?? new Command<object>(ExecuteSellCommand, CanExecuteSellCommand)); }
+        }
+        bool CanExecuteSellCommand(object obj) => true;
+        async void ExecuteSellCommand(object obj)
+        {
+            await navigationService.NavigateAsync(NavigationKeys.CreateCashpoint);
+        }
 
         async void GetCashPoints()
         {

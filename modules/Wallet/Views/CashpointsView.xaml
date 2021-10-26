@@ -4,8 +4,10 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     Title="Find a cash point"
     x:Class="Wallet.Views.CashpointsView">
-    <ContentPage.Content>
+    <AbsoluteLayout>
            <!--The map-->
-        <ContentView Content="{Binding CashpointsMap}"/>
-    </ContentPage.Content>
+        <ContentView Content="{Binding CashpointsMap}" AbsoluteLayout.LayoutBounds="0,0,1,1" AbsoluteLayout.LayoutFlags="All"/>
+        <ImageButton Source="Create.png" VerticalOptions="Center"  HorizontalOptions="End" Command="{Binding SellCommand}" HeightRequest="70" AbsoluteLayout.LayoutBounds="0.5,0.9,350,1350" WidthRequest="70" BackgroundColor="Transparent" IsEnabled="True"><ImageButton.GestureRecognizers><TapGestureRecognizer Command="{Binding SellCommand}"/></ImageButton.GestureRecognizers></ImageButton>    
+            
+    </AbsoluteLayout>
 </ContentPage>

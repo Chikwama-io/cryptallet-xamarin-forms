@@ -217,23 +217,34 @@ namespace Wallet.Services
         public string ThisCity=>City;
 
         string City;
+        BigInteger InitialGasPrice = 65164000;
+        BigInteger GasPrice;
+
         Account DefaultAccount => walletManager.Wallet?.GetAccount(0);
 
         string ABI = @"[{'anonymous':false,'inputs':[{'indexed':false,'internalType':'address','name':'cashpoint','type':'address'}],'name':'CreatedCashPoint','type':'event'},{'inputs':[{'internalType':'string','name':'name','type':'string'},{'internalType':'int256','name':'mylat','type':'int256'},{'internalType':'int256','name':'mylong','type':'int256'},{'internalType':'uint256','name':'phone','type':'uint256'},{'internalType':'uint256','name':'rate','type':'uint256'},{'internalType':'string','name':'endtime','type':'string'}],'name':'addCashPoint','outputs':[],'stateMutability':'nonpayable','type':'function'},{'inputs':[{'internalType':'address','name':'','type':'address'}],'name':'cashpoints','outputs':[{'internalType':'string','name':'_name','type':'string'},{'internalType':'int256','name':'_latitude','type':'int256'},{'internalType':'int256','name':'_longitude','type':'int256'},{'internalType':'uint256','name':'_phoneNumber','type':'uint256'},{'internalType':'uint256','name':'rate','type':'uint256'},{'internalType':'string','name':'endtime','type':'string'},{'internalType':'bool','name':'isCashPoint','type':'bool'}],'stateMutability':'view','type':'function'},{'inputs':[],'name':'count','outputs':[{'internalType':'uint256','name':'','type':'uint256'}],'stateMutability':'view','type':'function'},{'inputs':[{'internalType':'address','name':'Add','type':'address'}],'name':'getCashPoint','outputs':[{'components':[{'internalType':'string','name':'_name','type':'string'},{'internalType':'int256','name':'_latitude','type':'int256'},{'internalType':'int256','name':'_longitude','type':'int256'},{'internalType':'uint256','name':'_phoneNumber','type':'uint256'},{'internalType':'uint256','name':'rate','type':'uint256'},{'internalType':'string','name':'endtime','type':'string'},{'internalType':'bool','name':'isCashPoint','type':'bool'}],'internalType':'struct CashPoints.CashPoint','name':'_cashpoint','type':'tuple'}],'stateMutability':'view','type':'function'},{'inputs':[{'internalType':'uint256','name':'','type':'uint256'}],'name':'keys','outputs':[{'internalType':'address','name':'','type':'address'}],'stateMutability':'view','type':'function'},{'inputs':[{'internalType':'string','name':'name','type':'string'},{'internalType':'int256','name':'mylat','type':'int256'},{'internalType':'int256','name':'mylong','type':'int256'},{'internalType':'uint256','name':'phone','type':'uint256'},{'internalType':'uint256','name':'rate','type':'uint256'},{'internalType':'string','name':'endtime','type':'string'}],'name':'updateCashPoint','outputs':[],'stateMutability':'nonpayable','type':'function'}]";
 
 
-readonly IWalletManager walletManager;
+        readonly IWalletManager walletManager;
         //StandardTokenService standardTokenService;
         Web3 web3;
 
         public AccountsManager(IWalletManager walletManager)
         {
             this.walletManager = walletManager;
-
+            GetGasPrice();
             Initialize();
         }
 
-        public async Task<string[]> GetAccountsAsync()
+        public async Task GetGasPrice()
+        {
+            var account = new Account(DefaultAccount.PrivateKey, 33);
+            web3 = new Web3(account, url);
+            var gas = await web3.Eth.GasPrice.SendRequestAsync();
+            GasPrice = gas.Value;
+        }
+
+            public async Task<string[]> GetAccountsAsync()
         {
             return new string[] { DefaultAccountAddress };
         }

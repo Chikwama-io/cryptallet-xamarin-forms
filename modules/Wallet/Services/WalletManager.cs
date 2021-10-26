@@ -45,6 +45,7 @@ namespace Wallet.Services
         const string SEED_KEY = "__wallet__seed__";
         const string SEED_PASSWORD = "GNzheuuNsOkkBHG3hFSpA37UAQ1TDWQH0ncZcR2+7r4=";
 
+     
         Wallet wallet;
         public Wallet Wallet => wallet;
         IDictionary<string, string> Keystore;
@@ -57,6 +58,8 @@ namespace Wallet.Services
             Keystore = new Dictionary<string, string>();
 
         }
+
+
 
         public Task CreateWalletAsync()
         {

@@ -67,36 +67,38 @@
                />
 
             </StackLayout>
-            <StackLayout Orientation="Horizontal" Margin="0,10,10,0" HorizontalOptions="Center" >
-                <ImageButton Source="SendIcon.png" VerticalOptions="Start" Command="{Binding SendCommand}" HeightRequest="80" WidthRequest="80" BackgroundColor="Transparent" Margin="25,0,0,0" IsEnabled="True"><ImageButton.GestureRecognizers><TapGestureRecognizer Command="{Binding SendCommand}"/></ImageButton.GestureRecognizers></ImageButton>
+            <StackLayout Orientation="Horizontal" Margin="0,20,10,0" HorizontalOptions="Center" >
+                <ImageButton Source="SendIcon.png" VerticalOptions="Start" Command="{Binding SendCommand}" HeightRequest="70" WidthRequest="70" BackgroundColor="Transparent" Margin="25,0,0,0" IsEnabled="True"><ImageButton.GestureRecognizers><TapGestureRecognizer Command="{Binding SendCommand}"/></ImageButton.GestureRecognizers></ImageButton>
 
-                <ImageButton Source="RecieveIcon.png" VerticalOptions="Start" Command="{Binding ReceiveCommand}" HeightRequest="80" WidthRequest="80" BackgroundColor="Transparent" IsEnabled="True"><ImageButton.GestureRecognizers><TapGestureRecognizer Command="{Binding ReceiveCommand}"/></ImageButton.GestureRecognizers></ImageButton>
+                
+                <ImageButton Source="BuyIcon.png" VerticalOptions="Start" Command="{Binding BuyCommand}" HeightRequest="70" WidthRequest="70" BackgroundColor="Transparent" IsEnabled="True"><ImageButton.GestureRecognizers><TapGestureRecognizer Command="{Binding BuyCommand}"/></ImageButton.GestureRecognizers></ImageButton>
 
-                <ImageButton Source="BuyIcon.png" VerticalOptions="Start" Command="{Binding BuyCommand}" HeightRequest="80" WidthRequest="80" BackgroundColor="Transparent" IsEnabled="True"><ImageButton.GestureRecognizers><TapGestureRecognizer Command="{Binding BuyCommand}"/></ImageButton.GestureRecognizers></ImageButton>
-
-                <ImageButton Source="SellIcon.png" VerticalOptions="Start" Command="{Binding SellCommand}" HeightRequest="80" WidthRequest="80" BackgroundColor="Transparent" IsEnabled="True"><ImageButton.GestureRecognizers><TapGestureRecognizer Command="{Binding SellCommand}"/></ImageButton.GestureRecognizers></ImageButton>    
+                <ImageButton Source="SellIcon.png" VerticalOptions="Start" Command="{Binding SellCommand}" HeightRequest="70" WidthRequest="70" BackgroundColor="Transparent" IsEnabled="True"><ImageButton.GestureRecognizers><TapGestureRecognizer Command="{Binding SellCommand}"/></ImageButton.GestureRecognizers></ImageButton>    
             </StackLayout>
-            <StackLayout Orientation="Horizontal" HorizontalOptions="Center">
+            <StackLayout Orientation="Horizontal" Padding="0,0,0,0" HorizontalOptions="Center">
                 <Grid VerticalOptions="Center">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="80" />
                         <ColumnDefinition Width="80" />
-                        <ColumnDefinition Width="80" />
+                        
                         <ColumnDefinition Width="80" />
                     </Grid.ColumnDefinitions>
                     <Label Grid.Row="0"
                            Grid.Column="0"
+                           Margin="35,0,0,0"
                            FontSize="16"
                            FontAttributes="Bold"
                            Text="Send"
                            VerticalTextAlignment="Center"
                            HorizontalTextAlignment="Center"
                            TextColor= "{StaticResource ColorTextSecondary}"/>
+           
                     <Label Grid.Row="0"
                            Grid.Column="1"
                            FontSize="16"
                            FontAttributes="Bold"
-                           Text="Receive"
+                           Text="Buy"
+                           Margin="13,0,0,0"
                            VerticalTextAlignment="Center"
                            HorizontalTextAlignment="Center"
                            TextColor="{StaticResource ColorTextSecondary}"/>
@@ -104,23 +106,15 @@
                            Grid.Column="2"
                            FontSize="16"
                            FontAttributes="Bold"
-                           Text="Buy"
-                           VerticalTextAlignment="Center"
-                           HorizontalTextAlignment="Center"
-                           TextColor="{StaticResource ColorTextSecondary}"/>
-                    <Label Grid.Row="0"
-                           Grid.Column="3"
-                           FontSize="16"
-                           FontAttributes="Bold"
                            Text="Sell"
-                           
+                           Margin="0,0,0,0"
                            VerticalTextAlignment="Center"
                            HorizontalTextAlignment="Center"
                            TextColor="{StaticResource ColorTextSecondary}"/>
                 </Grid>
               
             </StackLayout>
-            <Label Text="{Binding City, StringFormat=Cash points in: {0}}" BackgroundColor="#FAFAFA"  HorizontalTextAlignment="Center" />
+            <Label Text="{Binding City, StringFormat= Cash points in: {0}}" Margin="0,20,0,0" FontSize="{StaticResource FontSizeSmall}" TextColor="{StaticResource ColorTextPrimary}" HorizontalTextAlignment="Center" />
         </StackLayout>
             
 

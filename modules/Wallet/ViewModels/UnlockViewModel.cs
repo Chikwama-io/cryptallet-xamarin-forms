@@ -20,6 +20,7 @@ namespace Wallet.ViewModels
     using System.Windows.Input;
     using Prism.Navigation;
     using Wallet.Core;
+    using Xamarin.Essentials;
     using Xamarin.Forms;
 
     public partial class UnlockViewModel : ViewModelBase
@@ -57,6 +58,7 @@ namespace Wallet.ViewModels
         async void ExecuteUnlockCommand(object obj)
         {
             var unlocked = await walletManager.UnlockWalletAsync(Passcode);
+            var current = Connectivity.NetworkAccess;
 
             if (unlocked == false)
             {
@@ -65,7 +67,14 @@ namespace Wallet.ViewModels
                 return;
             }
 
-            await navigator.NavigateAsync(NavigationKeys.UnlockWallet);
+            if (current == NetworkAccess.Internet)
+            {
+                await navigator.NavigateAsync(NavigationKeys.UnlockWallet);
+            }
+            else
+            {
+                userDialogs.Alert("You are not connected to the internet");
+            }
         }
     }
 

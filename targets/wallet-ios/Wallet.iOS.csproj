@@ -557,6 +557,7 @@
     <BundleResource Include="Resources\SellIcon.png" />
     <BundleResource Include="Resources\SendIcon.png" />
     <BundleResource Include="Resources\Receipt.png" />
+    <BundleResource Include="Resources\Create.png" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
 </Project>
