@@ -14,7 +14,7 @@ We specialize in developing mobile applications using Xamarin and native technol
 ## Screenshots
 | Unlock        | Home           | History  |
 | ------------- |----------------| ---------|
-|<img src="./screenshots/unlock.png" alt="Unlock"/>| <img src="./screenshots/home.png" alt="Home"/> | <img src="./screenshots/history.png" alt="History"/> |
+|<img src="./screenshots/unlock.png" alt="Unlock"/>| <img src="./screenshots/home.png" alt="Home"/> | <img src="./screenshots/FindCashPoint.png" alt="FindCashPoint"/> |
 
 ## How to folk
 Currently, the app is worked with my own created ERC20 contract. You might need to change the contract address to your desired one in order to test out the app.
