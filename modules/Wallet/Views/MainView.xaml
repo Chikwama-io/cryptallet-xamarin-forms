@@ -112,10 +112,16 @@
                            HorizontalTextAlignment="Center"
                            TextColor="{StaticResource ColorTextSecondary}"/>
                 </Grid>
-              
             </StackLayout>
-            <Label Text="{Binding City, StringFormat= Cash points in: {0}}" Margin="0,20,0,0" FontSize="{StaticResource FontSizeSmall}" TextColor="{StaticResource ColorTextPrimary}" HorizontalTextAlignment="Center" />
-        </StackLayout>
+            <Grid Padding="0,20,0,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="100" />
+                        <ColumnDefinition Width="100" />
+                </Grid.ColumnDefinitions>
+            <Label Text="Cash points in:" HorizontalTextAlignment="Start" Grid.Column="1" FontSize="{StaticResource FontSizeSmall}" />
+            <Label Text="{Binding City}" Grid.Column="2" FontSize="{StaticResource FontSizeSmall}" TextColor="{StaticResource ColorTextPrimary}"  />
+                </Grid>
+            </StackLayout>
             
 
         <ScrollView BackgroundColor="#FAFAFA" Grid.Row="1">
@@ -153,7 +159,7 @@
                           
                             <Label
                                 VerticalTextAlignment="End"
-                                Text="{Binding EndTime,StringFormat=Until: {0}}"
+                                Text="{Binding EndTime, StringFormat=Until: {0}}"
                                 TextColor="{StaticResource ColorTextSecondary}"
                                 FontSize="{StaticResource FontSizeSmall}" />
                         </Grid>
@@ -173,6 +179,7 @@
             <Label
                 Text="LOG OUT"
                 TextColor="{StaticResource ColorAccent}"
+                
                 FontSize="{StaticResource FontSizeNormal}"
                 HorizontalTextAlignment="Center" />
             <ContentView.GestureRecognizers>

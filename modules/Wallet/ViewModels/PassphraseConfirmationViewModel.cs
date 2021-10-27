@@ -20,6 +20,7 @@ using Wallet.Core;
 using Wallet.Services;
 using Xamarin.Forms;
 using Acr.UserDialogs;
+using Xamarin.Essentials;
 
 namespace Wallet.ViewModels
 {
@@ -69,6 +70,7 @@ namespace Wallet.ViewModels
         bool CanExecuteContinueCommand(string obj) => true;
         async void ExecuteContinueCommand(string obj)
         {
+            var current = Connectivity.NetworkAccess;
             var words = controller.GetSeedWords();
             var isValid = string.Equals(SecondWord, words[1], StringComparison.InvariantCultureIgnoreCase)
                                 && string.Equals(FifthWord, words[4], StringComparison.InvariantCultureIgnoreCase)
@@ -81,7 +83,14 @@ namespace Wallet.ViewModels
             }
 
             await controller.SaveWalletAsync();
-            await navigator.NavigateAsync(NavigationKeys.ConfirmPassphraseOk);
+            if (current == NetworkAccess.Internet)
+            {
+                await navigator.NavigateAsync(NavigationKeys.ConfirmPassphraseOk);
+            }
+            else
+            {
+                await navigator.NavigateAsync(NavigationKeys.UnlockWallet);
+            }
         }
     }
 }

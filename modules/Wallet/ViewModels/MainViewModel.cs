@@ -16,7 +16,12 @@ namespace Wallet.ViewModels
 {
     public class MainViewModel : ViewModelBase
     {
-        public string DefaultAccountAddress => accountsManager.DefaultAccountAddress;
+        string _DefaultAddress => accountsManager.DefaultAccountAddress;
+        public string DefaultAccountAddress 
+            {
+                get => _DefaultAddress;
+                
+            }
 
         CashpointModel[] _CashPoints;
         public CashpointModel[] CashPoints
@@ -25,8 +30,11 @@ namespace Wallet.ViewModels
             set => SetProperty(ref _CashPoints, value);
         }
 
-        
-        public string City => accountsManager.ThisCity;
+        string _City => accountsManager.ThisCity;
+        public string City
+        {
+            get => _City;
+        }
        
 
         bool _IsFetching;
@@ -68,7 +76,6 @@ namespace Wallet.ViewModels
         async void LoadCashPoints()
         {
             userDialogs.ShowLoading("Finding Cash points");
-            List<CashpointModel> tempList = new List<CashpointModel>();
             CashpointModel[] temp = await accountsManager.GetCashPointsAsync();
             CashPoints = temp;
             userDialogs.HideLoading();

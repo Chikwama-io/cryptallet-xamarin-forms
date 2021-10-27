@@ -73,7 +73,7 @@ namespace Wallet.ViewModels
             }
             else
             {
-                userDialogs.Alert("You are not connected to the internet");
+                userDialogs.Alert("No internet connection");
             }
         }
     }
