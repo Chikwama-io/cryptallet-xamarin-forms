@@ -7,9 +7,9 @@ This project is maintained by
 Chikwama</a> <br>
 
 ## Screenshots
-| Unlock        | Home           | Find a cash point  |
-| ------------- |----------------| ---------|
-|<img src="./screenshots/unlock.png" alt="Unlock"/>| <img src="./screenshots/home.png" alt="Home"/> | <img src="./screenshots/FindCashPoint.png" alt="FindCashPoint"/> |
+| Unlock        | Home           | Find a cash point  | Wallet          |
+| ------------- |---------------| --------------|---------------|
+|<img src="./screenshots/unlock.png" alt="Unlock"/>| <img src="./screenshots/home.png" alt="Home"/> | <img src="./screenshots/FindCashPoint.png" alt="FindCashPoint"/> | <img src="./screenshots/Wallet.png" alt="Wallet"/> |
 
 
 
