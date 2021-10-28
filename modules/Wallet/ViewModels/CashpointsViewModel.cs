@@ -98,7 +98,7 @@ namespace Wallet.ViewModels
                     CashpointsMap.Pins.Add(new Pin
                         {
                             Type = PinType.SearchResult,
-                            Label = cashpoint.AccountName + ": 0" + cashpoint.PhoneNumber + ", USD Rate:" + cashpoint.Rate + ", Until: "+ endTime.ToShortDateString(),
+                            Label = cashpoint.AccountName + ":" + cashpoint.PhoneNumber + ", USD Rate:" + cashpoint.Rate + ", Until: "+ endTime.ToShortDateString(),
                             Position = new Position((double)cashpoint.Latitude, (double)cashpoint.Longitude)
                         });
                     

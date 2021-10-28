@@ -42,22 +42,25 @@ namespace Wallet.ViewModels
                 set => SetProperty(ref _Phone, value);
             }
 
-            public uint _Duration;
+            uint _Duration;
             public uint Duration
             {
-                get { return _Duration; }
-                set { _Duration = value; Cost = Duration * 0.5; OnPropertyChanged(); }
+                get => _Duration;
+                set { _Duration = value; Cost = _Duration * 0.5; OnPropertyChanged(); }
             }
+
 
 
             double _Cost;
             public double Cost
             {
-                get { return _Cost; }
-                set { _Cost = value; OnPropertyChanged(); }
-            }
+                get => _Cost;
+                set => SetProperty(ref _Cost, value);
+             }
 
-            double MyLat;
+
+
+    double MyLat;
             double MyLong;
             //CancellationTokenSource cts;
         //public double Cost => Duration * 1;
@@ -90,50 +93,11 @@ namespace Wallet.ViewModels
             MyLat = location.Latitude; 
             MyLong = location.Longitude;
             var result = await accountsManager.AddCashPointAsync(CashpointName, Nethereum.Util.UnitConversion.Convert.ToWei(MyLat), Nethereum.Util.UnitConversion.Convert.ToWei(MyLong),Phone,Rate,Duration);
-            userDialogs.Toast($"Cash point added, active until :{result}");
+            userDialogs.Alert($"Cash point added, Transaction ID:{result}");
             userDialogs.HideLoading();
         }
 
 
-        //async Task GetCurrentLocation()
-        //{
-        //    try
-        //    {
-        //        var request = new GeolocationRequest(GeolocationAccuracy.Medium, TimeSpan.FromSeconds(10));
-        //        cts = new CancellationTokenSource();
-        //        var location = await Geolocation.GetLocationAsync(request, cts.Token);
-
-
-        //        if (location != null)
-        //        {
-        //            MyLat = location.Latitude;
-        //            MyLong = location.Longitude;
-        //            //Console.WriteLine($"Latitude: {location.Latitude}, Longitude: {location.Longitude}, Altitude: {location.Altitude}");
-        //        }
-
-        //        //return null;
-        //    }
-        //    catch (FeatureNotSupportedException fnsEx)
-        //    {
-
-        //        // Handle not supported on device exception
-        //    }
-        //    catch (FeatureNotEnabledException fneEx)
-        //    {
-
-        //        // Handle not enabled on device exception
-        //    }
-        //    catch (PermissionException pEx)
-        //    {
-
-        //        // Handle permission exception
-        //    }
-        //    catch (Exception ex)
-        //    {
-
-        //        // Unable to get location
-        //    }
-        //}
 
     }
 

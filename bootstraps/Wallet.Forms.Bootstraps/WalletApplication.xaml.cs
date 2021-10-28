@@ -102,7 +102,7 @@ namespace Wallet.Forms.Bootstraps
 
     public static partial class Routes
     {
-        static readonly string appScheme = "cryptallet";
+        static readonly string appScheme = "Chikwama";
         static readonly string navigation = nameof(NavigationPage);
 
         public static readonly Uri Home = new Uri($"{appScheme}:///{navigation}/{nameof(MainView)}", UriKind.Absolute);

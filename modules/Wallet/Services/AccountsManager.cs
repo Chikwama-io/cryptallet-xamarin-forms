@@ -419,7 +419,7 @@ namespace Wallet.Services
             var contractHandler = web3.Eth.GetContractHandler(CASHPOINT_CONTRACT_ADDRESS);
             var queryCount = await contractHandler.QueryDeserializingToObjectAsync<Count, CountOutputDTO>(new Count() { });
             var count = queryCount.Count;
-            GetCity();
+            await GetCity();
             //var keysQueryHandler = web3.Eth.GetContractQueryHandler<Keys>();
             if (count == 0)
             {
@@ -476,7 +476,7 @@ namespace Wallet.Services
             
         }
 
-        async void GetCity()
+        async Task GetCity()
         {
             var location = await Geolocation.GetLocationAsync();
             var placemarks = await Geocoding.GetPlacemarksAsync(location);
@@ -493,6 +493,7 @@ namespace Wallet.Services
             //web3 = new Web3(DefaultAccount, client);
             //standardTokenService = new StandardTokenService(web3, CONTRACT_ADDRESS);
             web3 = new Web3(DefaultAccount,url);
+            
         }
 
 

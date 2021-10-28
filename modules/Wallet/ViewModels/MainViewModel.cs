@@ -30,11 +30,8 @@ namespace Wallet.ViewModels
             set => SetProperty(ref _CashPoints, value);
         }
 
-        string _City => accountsManager.ThisCity;
-        public string City
-        {
-            get => _City;
-        }
+        public string CurrentCity => accountsManager.ThisCity;
+        
        
 
         bool _IsFetching;

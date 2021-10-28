@@ -90,9 +90,7 @@
         <Grid Grid.Row="1"
             Padding="24, 48"
             RowSpacing="2"
-              BackgroundColor="#FAFAFA"
-              
-            >
+              BackgroundColor="#FAFAFA">
           
             <Label
                 

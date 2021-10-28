@@ -113,14 +113,17 @@
                            TextColor="{StaticResource ColorTextSecondary}"/>
                 </Grid>
             </StackLayout>
+            <StackLayout>
             <Grid Padding="0,20,0,0">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="100" />
                         <ColumnDefinition Width="100" />
                 </Grid.ColumnDefinitions>
-            <Label Text="Cash points in:" HorizontalTextAlignment="Start" Grid.Column="1" FontSize="{StaticResource FontSizeSmall}" />
-            <Label Text="{Binding City}" Grid.Column="2" FontSize="{StaticResource FontSizeSmall}" TextColor="{StaticResource ColorTextPrimary}"  />
+                        <Label Text="Cash points in:" HorizontalTextAlignment="Start" Grid.Column="1" FontSize="{StaticResource FontSizeSmall}" />
+                        
+                        <Label Text="{Binding CurrentCity}" Grid.Column="2" FontSize="{StaticResource FontSizeSmall}"/>
                 </Grid>
+                </StackLayout>
             </StackLayout>
             
 
@@ -147,7 +150,7 @@
                                 FontSize="{StaticResource FontSizeNormal}" />
                             <Label
                                 VerticalTextAlignment="Center"
-                                Text="{Binding PhoneNumber, StringFormat='0{0}'}"
+                                Text="{Binding PhoneNumber}"
                                 TextColor="{StaticResource ColorTextPrimary}"
                                 FontSize="{StaticResource FontSizeNormal}" />
                             <Label
